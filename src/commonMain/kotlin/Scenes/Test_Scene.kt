@@ -1,7 +1,5 @@
 package Scenes
 
-import com.soywiz.korev.*
-import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
