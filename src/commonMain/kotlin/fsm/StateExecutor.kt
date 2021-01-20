@@ -28,7 +28,7 @@ class StateExecutor<T>(private val owner: T, val innerState: State<T>) {
         innerState.doExecute(this.owner)
     }
 
-    //calls the execute function
+    //calls the end function
     fun callEnd() {
         innerState.doEnd(this.owner)
     }
