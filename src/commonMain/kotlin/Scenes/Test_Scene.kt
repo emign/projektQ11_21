@@ -1,12 +1,16 @@
 package Scenes
 
+import fsm.Entity
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
-import com.soywiz.korim.color.*
 
 class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
-        solidRect(10,10,color = Colors.GREEN).xy(0,0)
+        repeat(50) {
+            val e = Entity()
+            e.view.xy((0..1400).random(), (0..800).random())
+            addChild(e.view)
+        }
 
     }
 }
