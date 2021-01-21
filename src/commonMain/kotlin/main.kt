@@ -1,19 +1,14 @@
-import com.soywiz.klock.*
 import com.soywiz.korge.*
-import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
-import com.soywiz.korim.format.*
 import com.soywiz.korio.file.std.*
-import com.soywiz.korma.geom.*
-import com.soywiz.korma.interpolation.*
 import xmlReader.readPlayer
 
 suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
 
 	//test if the reader works correctly -> it does, all data is correctly read
 
-	val character = resourcesVfs["Test.xml"].readPlayer()
+	val character = resourcesVfs["Characters/Test.xml"].readPlayer()
 	addChild(Image(character.model).apply { scale = 0.7 })
 
 	println(character.healthpoints)
