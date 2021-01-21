@@ -12,7 +12,7 @@ import com.soywiz.korio.serialization.xml.readXml
 
 data class Character(
     val model: Bitmap,
-    val healthpoints: Int,
+    val healthpoints: Double,
     val movementSpeed: Double,
     val jumpHeight: Double,
     val standardAttack: Attack,

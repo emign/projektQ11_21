@@ -17,7 +17,7 @@ suspend fun VfsFile.readPlayer(): Character {
     //basic properties
     val modelFile = xml.attribute("model")
     val model = resourcesVfs[modelFile.toString()].readBitmap()
-    val healthpoints = xml.attribute("healthpoints")?.toInt() ?: 0
+    val healthpoints = xml.attribute("healthpoints")?.toDouble() ?: 0.0
     val movementSpeed = xml.attribute("movementSpeed")?.toDouble() ?: 0.0
     val jumpHeight = xml.attribute("jumpHeight")?.toDouble() ?: 0.0
 
