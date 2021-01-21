@@ -37,6 +37,7 @@ class StateMachine<T> {
     //sets up the starting state
     fun setStartState(state: StateExecutor<T>) {
         currentState = state
+        currentState.callBegin()
     }
 
     //creates a new State for the object called "owner" -> the state only affects him
@@ -49,5 +50,9 @@ class StateMachine<T> {
     //updates the current state
     fun update() {
         currentState.callExecute()
+    }
+
+    fun getCurrentState(): StateExecutor<T> {
+        if (::currentState.isInitialized) return currentState else error("The current state is null, not initialized yet")
     }
 }
