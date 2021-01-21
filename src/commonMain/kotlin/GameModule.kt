@@ -1,5 +1,4 @@
 import Scenes.*
-import com.soywiz.korge.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.views
 import com.soywiz.korinject.*
