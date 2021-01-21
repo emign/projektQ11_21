@@ -14,31 +14,18 @@ jobs:
   test-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v1
-      - run: CALL gradlew.bat --no-daemon
-        shell: cmd
+      - uses: actions/checkout@v2.1.0
       - run: CALL gradlew.bat --no-daemon jvmTest
         shell: cmd
-      - run: CALL gradlew.bat --no-daemon check
-        shell: cmd
-        env:
-          DISABLE_JAVASCRIPT_TEST: true
 
   test-mac:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - run: ./gradlew --no-daemon
+      - uses: actions/checkout@v2.1.0
       - run: ./gradlew --no-daemon jvmTest
-      - run: ./gradlew --no-daemon check
-        env:
-          DISABLE_JAVASCRIPT_TEST: true
 
   test-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - run: sudo apt-get install xvfb
-      - run: xvfb-run --auto-servernum ./gradlew --no-daemon
-      - run: xvfb-run --auto-servernum ./gradlew --no-daemon jvmTest
-      - run: xvfb-run --auto-servernum ./gradlew --no-daemon check lint testDebugUnitTest
+      - uses: actions/checkout@v2.1.0
+      - run: ./gradlew --no-daemon jvmTest
