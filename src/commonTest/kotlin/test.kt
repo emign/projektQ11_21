@@ -31,14 +31,14 @@ class MyTest : ViewsForTesting() {
         assertEquals(50, character.finisherAttack.damage)
 
         assertEquals(false, character.standardAttack.ranged)
-        assertEquals(true, character.specialAttack.ranged)
-        assertEquals(false, character.rangedAttack.ranged)
+        assertEquals(false, character.specialAttack.ranged)
+        assertEquals(true, character.rangedAttack.ranged)
         assertEquals(false, character.finisherAttack.ranged)
 
-        assertEquals(5000.milliseconds, character.standardAttack.cooldown)
-        assertEquals(20.seconds, character.specialAttack.cooldown)
-        assertEquals(15.seconds, character.rangedAttack.cooldown)
-        assertEquals(25.seconds, character.finisherAttack.cooldown)
+        assertEquals(5.milliseconds, character.standardAttack.cooldown)
+        assertEquals(20.milliseconds, character.specialAttack.cooldown)
+        assertEquals(15.milliseconds, character.rangedAttack.cooldown)
+        assertEquals(25.milliseconds, character.finisherAttack.cooldown)
 
         assertEquals(true, character.standardAttack.isReady)
         assertEquals(false, character.specialAttack.isReady)
