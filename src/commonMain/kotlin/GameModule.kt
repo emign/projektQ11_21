@@ -1,5 +1,4 @@
 import Scenes.*
-import com.soywiz.korge.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
