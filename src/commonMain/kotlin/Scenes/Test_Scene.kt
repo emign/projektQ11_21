@@ -14,7 +14,7 @@ class TestScene : Scene() {
         Multiplayer.startSever()
         GlobalScope.launch {
             while (true){
-                println(Multiplayer.read(Strg("")))
+                println(Multiplayer.read(Strg("")).toString())
             }
         }
         //*/
