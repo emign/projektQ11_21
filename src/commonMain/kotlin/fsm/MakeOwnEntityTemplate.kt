@@ -2,13 +2,8 @@ package fsm
 
 import com.esotericsoftware.spine.*
 import com.esotericsoftware.spine.korge.SkeletonView
-import com.esotericsoftware.spine.korge.skeletonView
-import com.soywiz.korev.Key
-import com.soywiz.korge.input.keys
-import com.soywiz.korge.view.*
-import com.soywiz.korim.atlas.Atlas
+import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.atlas.readAtlas
-import com.soywiz.korim.color.Colors
 import com.soywiz.korio.file.std.resourcesVfs
 
 class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
@@ -23,6 +18,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
             return MakeOwnEntityTemplate(skeletonData)
         }
     }
+
 
     //Spine model and animations
     var bodyModel: Skeleton = Skeleton(skeletonData)
@@ -43,6 +39,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
     val jumpState = createState("jump", stateManager)
     val runState = createState("run", stateManager)
     val deathState = createState("death", stateManager)
+    val idleState = createState("idle", stateManager)
 
 
     //what should be done on initialization?
@@ -53,7 +50,6 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
 
         //do every frame -> loop of the Entity
         modelView.addUpdater {
-            println("Test")
             onExecute()
         }
     }
@@ -66,14 +62,16 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
         val stateData = AnimationStateData(data)
 
         //set mixes for all animation transitions
-        stateData.setMix("run", "jump", 0.2f)
+        stateData.setMix("run", "jump", 0.4f)
         stateData.setMix("idle", "run", 0.2f)
         stateData.setMix("jump", "run", 0.2f)
         stateData.setMix("run", "death", 0.2f)
         stateData.setMix("run", "run", 0.25f)
         stateData.setMix("death", "run", 0.2f)
         stateData.setMix("run", "shoot", 0.2f)
+        stateData.setMix("run", "idle", 0.2f)
         stateData.setMix("shoot", "hoverboard", 0.5f)
+        stateData.setMix("jump", "idle", 0.5f)
 
         //set actual state and timeScale
         val state = AnimationState(stateData)
@@ -81,7 +79,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
 
         state.setAnimation(0, "idle", true)
 
-        state.update(1.0f/60.0f)
+        state.update(1.0f / 60.0f)
 
         state.apply(skeleton)
         skeleton.updateWorldTransform()
@@ -97,7 +95,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
      */
     fun onCreate() {
         initStates()
-        stateManager.setStartState(runState)
+        stateManager.setStartState(idleState)
     }
 
     /**
@@ -136,6 +134,8 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
         jumpState.onBegin { beginState_jump() }
         jumpState.onExecute { executeState_jump() }
         jumpState.onEnd { endState_jump() }
+
+        idleState.onBegin { animationState.setAnimation(0, "idle", true) }
     }
 
 
@@ -154,7 +154,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
 
     fun executeState_run() {
         this.modelView.x += 5
-        if(this.healthpoints <= 0) stateManager.doStateChange(deathState)
+        if (this.healthpoints <= 0) stateManager.doStateChange(deathState)
     }
 
     fun endState_run() {
@@ -184,7 +184,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
         if (isAtMaxJumpHeight) {
             if (baseLine - modelView.y > 0) modelView.y += movementSpeed
             else {
-                stateManager.doStateChange(runState)
+                stateManager.doStateChange(idleState)
                 isAtMaxJumpHeight = false
             }
         } else {
