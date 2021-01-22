@@ -1,55 +1,54 @@
-import fsm.StateMachine
+import kotlin.reflect.KClass
 
 /**
-*  base class for a data structure base. This is only used internal, normal states are [StateExecutor]
+ * This class holds the actual states of an object [owner]
  */
-class State<T>(val belongingMachine: StateMachine<T>) {
 
-    companion object {
-        var id: Int = 0
+class State<T>(private val owner: T, val codeHandler: StateCodeHandler<T>) {
+
+    //add code to the onBegin lambda of [State]
+    fun onBegin(body: T.() -> Unit) {
+        codeHandler.begin = body
     }
 
-    //id to identify a state
-    val id: Int = Companion.id
-
-    init {
-        Companion.id += 1
+    //add code to the onExecute lambda of [State]
+    fun onExecute(body: T.() -> Unit) {
+        codeHandler.execute = body
     }
 
-    //the actions the state contains
-    var begin: T.() -> Unit = {}
-    var execute: T.() -> Unit = {}
-    var end: T.() -> Unit = {}
-
-    //every action needs an owner to which the action should be performed
-    fun doBegin(owner: T) {
-        begin(owner)
+    //add code to the onEnd lambda of [State]
+    fun onEnd(body: T.() -> Unit) {
+        codeHandler.end = body
     }
 
-    fun doExecute(owner: T) {
-        execute(owner)
+    //calls the begin function
+    fun callBegin() {
+        codeHandler.begin(owner)
     }
 
-    fun doEnd(owner: T) {
-        end(owner)
+    //calls the execute function
+    fun callExecute() {
+        codeHandler.execute(owner)
     }
 
-    //extra stuff, not important
+    //calls the end function
+    fun callEnd() {
+        codeHandler.end(owner)
+    }
+
+    //random crap, not important
+
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (other::class != State::class) return false
         val obj = other as State<*>
 
-        return this.id == other.id && this.belongingMachine == other.belongingMachine
+        return this.codeHandler == other.codeHandler && this.owner == other.owner
     }
 
     override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + belongingMachine.hashCode()
-        result = 31 * result + begin.hashCode()
-        result = 31 * result + execute.hashCode()
-        result = 31 * result + end.hashCode()
+        var result = owner?.hashCode() ?: 0
+        result = 31 * result + codeHandler.hashCode()
         return result
     }
-
 }
