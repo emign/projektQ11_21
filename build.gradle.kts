@@ -29,6 +29,10 @@ korge {
 		add("commonMainApi", "com.soywiz.korlibs.korge:korge-dragonbones:${korgeVersion}")
 	}
 
+	dependencies {
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
+	}
+
 // To enable all targets at once
 
 	//targetAll()
