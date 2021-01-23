@@ -12,8 +12,6 @@ class Input(override val view: View, private val bus : EventBus) : KeyComponent 
     var leftKey = Key.LEFT
     var jumpKey = Key.SPACE
 
-    var preve : KeyEvent? = null
-
     init {
         bus.register<GroundedEvent>{ground()}
     }
