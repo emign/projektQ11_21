@@ -1,4 +1,6 @@
 import com.soywiz.korge.gradle.*
+import java.util.regex.Pattern.compile
+
 
 buildscript {
 	val korgePluginVersion: String by project
@@ -19,6 +21,11 @@ apply(plugin = "korge")
 
 korge {
 	id = "com.sample.demo"
+
+	dependencies {
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-swf:${korgeVersion}")
+	}
 
 // To enable all targets at once
 
