@@ -9,15 +9,13 @@ buildscript {
 		maven { url = uri("https://plugins.gradle.org/m2/") }
 		mavenCentral()
 		google()
-		maven { url = uri("https://dl.bintray.com/kotlin/kotlin-dev") }
-		maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
 	}
 	dependencies {
 		classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korgePluginVersion")
 	}
 }
 
-apply<KorgeGradlePlugin>()
+apply(plugin = "korge")
 
 korge {
 	id = "com.sample.demo"

@@ -3,8 +3,6 @@ package Scenes
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
-import kotlinx.coroutines.*
-import multiplayer.*
 
 class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
