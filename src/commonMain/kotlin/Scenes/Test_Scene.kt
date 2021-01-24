@@ -1,6 +1,7 @@
 package Scenes
 
 //import fsm.Entity
+import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
@@ -14,24 +15,30 @@ class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
 
         val bus = EventBus(this@TestScene)
-
-        addComponent(Input(this,bus))
+        val factory = KorgeDbFactory()
+        addComponent(Input(this, bus))
 
 
         repeat(1) {
 
-            val testEntity = MakeOwnEntityTemplate.build("Dragonbones_Test/HandTest.json", "Dragonbones_Test/HandTest.atlas", 1.0f)
+            val testEntity = DragonbonesEntityTemplate.build(
+                "Armature",
+                "Dragonbones_Test/HandTest_ske.json",
+                "Dragonbones_Test/HandTest_tex.json",
+                "Dragonbones_Test/HandTest_tex.png",
+                factory
+            )
 
             container {
                 speed = 1.0
-                scale(0.5)
-                position(400, 800)
-                addChild(testEntity.modelView)
+                scale(0.6)
+                position(500, 500)
+                addChild(testEntity.model)
                 //solidRect(10.0, 10.0, Colors.RED).centered
             }
-            bus.register<IdleEvent>{testEntity.stateManager.doStateChange(testEntity.idleState)}
-            bus.register<RightEvent>{testEntity.stateManager.doStateChange(testEntity.runState)}
-            bus.register<JumpEvent>{testEntity.stateManager.doStateChange(testEntity.jumpState)}
+            bus.register<IdleEvent> { testEntity.stateManager.doStateChange(testEntity.idleState) }
+            bus.register<RightEvent> { testEntity.stateManager.doStateChange(testEntity.runState) }
+            bus.register<JumpEvent> { testEntity.stateManager.doStateChange(testEntity.jumpState) }
         }
         solidRect(200, 1080).xy(1900, 0)
     }

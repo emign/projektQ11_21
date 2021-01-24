@@ -36,10 +36,10 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
 
     //create states
     val stateManager = createStateManager()
-    val jumpState = createState("jump", stateManager)
-    val runState = createState("run", stateManager)
-    val deathState = createState("death", stateManager)
-    val idleState = createState("idle", stateManager)
+    val jumpState = createState(stateManager)
+    val runState = createState(stateManager)
+    val deathState = createState(stateManager)
+    val idleState = createState(stateManager)
 
 
     //what should be done on initialization?
