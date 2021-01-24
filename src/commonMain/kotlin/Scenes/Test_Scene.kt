@@ -17,21 +17,10 @@ class TestScene : Scene() {
 
         addComponent(Input(this,bus))
 
-        val background = Image(resourcesVfs["spineboy-pma.png"].readBitmap()).apply {
-            //xy(0,0)
 
-            onClick {
-                println("geklickt")
-            }
-        }
+        repeat(1) {
 
-        addChild(background)
-
-
-
-        repeat(50) {
-
-            val testEntity = MakeOwnEntityTemplate.build("spineboy-pro.skel", "spineboy-pma.atlas", 1.0f)
+            val testEntity = MakeOwnEntityTemplate.build("Dragonbones_Test/HandTest.json", "Dragonbones_Test/HandTest.atlas", 1.0f)
 
             container {
                 speed = 1.0
