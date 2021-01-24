@@ -12,8 +12,8 @@ inline fun <T/*:fsm.Entity or whatever the base type is*/> T.createStateManager(
     return StateManager<T>().apply { callback() }
 }
 
-fun <T/*: Whatever the base type for having states is*/> T.createState(name: String, stateMachine: StateManager<T>): State<T> {
-    return stateMachine.createState(name, this)
+fun <T/*: Whatever the base type for having states is*/> T.createState(stateMachine: StateManager<T>): State<T> {
+    return stateMachine.createState( this)
 }
 
 /**
@@ -22,7 +22,7 @@ fun <T/*: Whatever the base type for having states is*/> T.createState(name: Str
 class StateManager<T> {
 
     //list of all states of the class
-    private var states = mutableMapOf<String, State<T>>()
+    private var states = mutableMapOf<Int, State<T>>()
 
     //the current state the
     private lateinit var currentState: State<T>
@@ -44,10 +44,10 @@ class StateManager<T> {
     fun setStartState(state: State<T>) = doStateChange(state)
 
     //creates a new State for the object called "owner" -> the state only affects him
-    fun createState(name: String, owner: T): State<T> {
-        val stateBase = StateCodeHandler<T>(name)
+    fun createState( owner: T): State<T> {
+        val stateBase = StateCodeHandler<T>()
         val state = State(owner, stateBase)
-        this.states[stateBase.name] = state
+        this.states[stateBase.id] = state
         return state
     }
 
