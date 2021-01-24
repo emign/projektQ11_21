@@ -16,7 +16,7 @@ suspend fun main() = Korge(){
     val atlas = factory.parseTextureAtlasData(Json.parse(tex)!!, img)
 
     val graphic = factory.buildArmatureDisplay("Armature")!!.position(500,500).scale(0.6)
-    graphic.animation.play("ATTACK")
+    graphic.animation.play("ATTACK", 5)
     addChild(graphic)
 
 }
