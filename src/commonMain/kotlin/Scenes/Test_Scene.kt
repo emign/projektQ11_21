@@ -23,15 +23,15 @@ class TestScene : Scene() {
 
             val testEntity = DragonbonesEntityTemplate.build(
                 "Armature",
-                "Dragonbones_Test/HandTest_ske.json",
-                "Dragonbones_Test/HandTest_tex.json",
-                "Dragonbones_Test/HandTest_tex.png",
+                "Dragonbones_Test/CharacterTest_ske.json",
+                "Dragonbones_Test/CharacterTest_tex.json",
+                "Dragonbones_Test/CharacterTest_tex.png",
                 factory
             )
 
             container {
                 speed = 1.0
-                scale(0.6)
+                scale(0.8)
                 position(500, 500)
                 addChild(testEntity.model)
                 //solidRect(10.0, 10.0, Colors.RED).centered
