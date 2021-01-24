@@ -92,7 +92,7 @@ class DragonbonesEntityTemplate(val model : KorgeDbArmatureDisplay) {
         jumpState.onExecute { executeState_jump() }
         jumpState.onEnd { endState_jump() }
 
-        idleState.onBegin { model.animation.play("IDLE") }
+        idleState.onBegin { model.animation.play("animtion0") }
     }
 
     fun spriteCollision() {
@@ -104,7 +104,7 @@ class DragonbonesEntityTemplate(val model : KorgeDbArmatureDisplay) {
 
     //Fun begins -> implement each state
     fun beginState_run() {
-        model.animation.play("IDLE")
+        model.animation.play("animtion0")
     }
 
     fun executeState_run() {
@@ -117,7 +117,7 @@ class DragonbonesEntityTemplate(val model : KorgeDbArmatureDisplay) {
     }
 
     fun beginState_death() {
-        model.animation.play("IDLE", 1)
+        model.animation.play("animtion0", 1)
     }
 
     fun executeState_death() {
@@ -132,7 +132,7 @@ class DragonbonesEntityTemplate(val model : KorgeDbArmatureDisplay) {
     }
 
     fun beginState_jump() {
-        model.animation.play("ATTACK", 1)
+        model.animation.play("animtion0", 1)
     }
 
     fun executeState_jump() {
