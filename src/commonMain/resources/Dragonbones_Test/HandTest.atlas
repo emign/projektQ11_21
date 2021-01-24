@@ -1,0 +1,27 @@
+
+HandTest.png
+size: 512,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+MechArm_HAND
+  rotate: false
+  xy: 1, 426
+  size: 278, 174
+  orig: 310, 200
+  offset: 12, 16
+  index: -1
+MechArm_FOREARM
+  rotate: false
+  xy: 1, 276
+  size: 457, 148
+  orig: 480, 180
+  offset: 10, 16
+  index: -1
+MechArm_ARM
+  rotate: false
+  xy: 1, 1
+  size: 432, 273
+  orig: 460, 310
+  offset: 14, 19
+  index: -1

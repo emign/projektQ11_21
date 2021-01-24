@@ -135,7 +135,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
         jumpState.onExecute { executeState_jump() }
         jumpState.onEnd { endState_jump() }
 
-        idleState.onBegin { animationState.setAnimation(0, "idle", true) }
+        idleState.onBegin { animationState.setAnimation(0, "IDLE", true) }
     }
 
 
@@ -149,7 +149,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
 
     //Fun begins -> implement each state
     fun beginState_run() {
-        animationState.setAnimation(0, "run", true)
+        animationState.setAnimation(0, "ATTACK", true)
     }
 
     fun executeState_run() {
@@ -162,7 +162,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
     }
 
     fun beginState_death() {
-        animationState.setAnimation(0, "death", false)
+        animationState.setAnimation(0, "ATTACK", false)
     }
 
     fun executeState_death() {
@@ -177,7 +177,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
     }
 
     fun beginState_jump() {
-        animationState.setAnimation(0, "jump", false)
+        animationState.setAnimation(0, "ATTACK", false)
     }
 
     fun executeState_jump() {
