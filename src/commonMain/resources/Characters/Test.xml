@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<player model="SpineModel.png" healthpoints="100" movementSpeed="5" jumpHeight="15">
-    <attack name="standard" damage="3" blockable="true" ranged="false" isSuperAttack="false" isFinisher="false" cooldown="5.0" isready="true">
+<player name="Demon" DbName="armatureName" skeletonJsonFile="Demon_ske.json" textureJsonFile="Demon_tex.json" imageFile="Demon_tex.png" healthpoints="100.0" movementSpeed="5.0" jumpHeight="15.0" direction="1">
+    <attack name="standard" damage="3" blockable="true" cooldown="5.0" isready="true">
     </attack>
-    <attack name="special" damage="10" blockable="false" ranged="false" isSuperAttack="true" isFinisher="false" cooldown="20.0" isready="false">
+    <attack name="special" damage="10" blockable="false" cooldown="20.0" isready="false">
     </attack>
-    <attack name="ranged" damage="5" blockable="false" ranged="true" isSuperAttack="false" isFinisher="false" cooldown="15.0" isready="true">
+    <attack name="ranged" damage="5" blockable="false" cooldown="15.0" isready="true">
     </attack>
-    <attack name="finish" damage="50" blockable="false" ranged="false" isSuperAttack="false" isFinisher="true" cooldown="25.0" isready="false">
-    </attack>
-    <state name="walk" duration="3.0"/>
-    <state name="idle" duration="4.0"/>
-    <state name="jump" duration="5.0"/>
 </player>
