@@ -2,6 +2,7 @@ package fsm
 
 import State
 import StateCodeHandler
+import character.CharacterBase
 import com.soywiz.korio.lang.currentThreadId
 
 /**
@@ -12,8 +13,8 @@ inline fun <T/*:fsm.Entity or whatever the base type is*/> T.createStateManager(
     return StateManager<T>().apply { callback() }
 }
 
-fun <T/*: Whatever the base type for having states is*/> T.createState(stateMachine: StateManager<T>): State<T> {
-    return stateMachine.createState(this)
+fun <T/*: Whatever the base type for having states is*/> T.createState(stateManager: StateManager<T>): State<T> {
+    return stateManager.createState(this)
 }
 
 /**
@@ -28,7 +29,7 @@ class StateManager<T> {
     private lateinit var currentState: State<T>
 
     //all finished states are stored here to maybe go to the previous state if necessary -> not used yet
-    private var stateStack = mutableListOf<State<T>>()
+    val stateStack = mutableListOf<State<T>>()
 
     //changes the current state
     fun doStateChange(new: State<T>) {

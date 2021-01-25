@@ -76,6 +76,7 @@ class DragonbonesEntityTemplate(val model: KorgeDbArmatureDisplay, val bus: Even
     fun onCreate() {
         initStates()
         stateManager.setStartState(idleState)
+        //init physics data or collision data
     }
 
     /**
