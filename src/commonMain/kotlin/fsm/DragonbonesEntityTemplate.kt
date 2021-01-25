@@ -1,36 +1,50 @@
-package fsm
-
-import com.esotericsoftware.spine.*
-import com.esotericsoftware.spine.korge.SkeletonView
+import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
+import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.view.addUpdater
-import com.soywiz.korim.atlas.readAtlas
+import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
+import com.soywiz.korio.serialization.json.Json
+import eventBus.EventBus
+import eventBus.GroundedEvent
+import fsm.MakeOwnEntityTemplate
+import fsm.createState
+import fsm.createStateManager
 
-class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
+//package fsm
+
+class DragonbonesEntityTemplate(val model: KorgeDbArmatureDisplay, val bus: EventBus) {
 
     companion object {
         /**
          * create a new object of this class -> Better than direct initialization via constructor
          */
-        suspend fun build(skeletonFile: String, atlasFile: String, scale: Float): MakeOwnEntityTemplate {
-            val atlas = resourcesVfs[atlasFile].readAtlas(true)
-            val skeletonData = resourcesVfs[skeletonFile].readSkeletonBinary(atlas, scale)
-            return MakeOwnEntityTemplate(skeletonData)
+        suspend fun build(
+            name: String,
+            skeletonJsonFile: String,
+            textureJsonFile: String,
+            imageFile: String,
+            eventBus: EventBus
+        ): DragonbonesEntityTemplate {
+            val ske = resourcesVfs[skeletonJsonFile].readString()
+            val tex = resourcesVfs[textureJsonFile].readString()
+            val img = resourcesVfs[imageFile].readBitmap()
+
+            val factory = KorgeDbFactory()
+
+            val data = factory.parseDragonBonesData(Json.parse(ske)!!)
+            val atlas = factory.parseTextureAtlasData(Json.parse(tex)!!, img)
+
+            val graphic = factory.buildArmatureDisplay(name)!!
+
+            return DragonbonesEntityTemplate(graphic, eventBus)
         }
     }
 
-
-    //Spine model and animations
-    var bodyModel: Skeleton = Skeleton(skeletonData)
-    var animationState: AnimationState = bindSkeletonAnimations(skeletonData, bodyModel)
-    val modelView = SkeletonView(bodyModel, animationState)
-
-    //Entity specific variables
     val healthpoints: Int = 5
     var timer: Int = 0
     val movementSpeed: Double = 5.0
     val jumpHeight: Double = 70.0
-    val baseLine = modelView.y
+    val baseLine = model.y
     var isAtMaxJumpHeight: Boolean = false
     var dead: Boolean = false
 
@@ -49,44 +63,10 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
         onCreate()
 
         //do every frame -> loop of the Entity
-        modelView.addUpdater {
+        model.addUpdater {
             onExecute()
         }
     }
-
-
-    /**
-     * Adds animations contained in [data] to the parameter [skeleton]
-     */
-    fun bindSkeletonAnimations(data: SkeletonData, skeleton: Skeleton): AnimationState {
-        val stateData = AnimationStateData(data)
-
-        //set mixes for all animation transitions
-        stateData.setMix("run", "jump", 0.4f)
-        stateData.setMix("idle", "run", 0.2f)
-        stateData.setMix("jump", "run", 0.2f)
-        stateData.setMix("run", "death", 0.2f)
-        stateData.setMix("run", "run", 0.25f)
-        stateData.setMix("death", "run", 0.2f)
-        stateData.setMix("run", "shoot", 0.2f)
-        stateData.setMix("run", "idle", 0.2f)
-        stateData.setMix("shoot", "hoverboard", 0.5f)
-        stateData.setMix("jump", "idle", 0.5f)
-
-        //set actual state and timeScale
-        val state = AnimationState(stateData)
-        state.timeScale = 1f
-
-        state.setAnimation(0, "idle", true)
-
-        state.update(1.0f / 60.0f)
-
-        state.apply(skeleton)
-        skeleton.updateWorldTransform()
-
-        return state
-    }
-
 
     /**
      * Setup function which should be called once after creating a new [MakeOwnEntityTemplate]
@@ -102,26 +82,22 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
      * Called every frame -> main loop, should update the currentState and to maybe even more later on
      */
     fun onExecute() {
-        if (modelView.x >= 1300) spriteCollision()
+        if (model.x >= 1300) spriteCollision()
         stateManager.updateCurrentState()
     }
+
 
     /**
      * Deletes the entity after it is dead
      */
     fun delete() {
-        this.modelView.removeFromParent()
+        this.model.removeFromParent()
         //if the entity is dead, it should not be updated any more by the Updater
         dead = true
         println("ENNNND")
     }
 
-    /**
-     * Initialize all states. Add code to the states. Each state has the following actions:
-     * onBegin -> called every time the entity enters this state -> setup
-     * onExecute -> called every frame if the state is the entity's current State
-     * onEnd -> called if the entity leaves the state -> called once at the end to clear up
-     */
+
     fun initStates() {
         runState.onBegin { beginState_run() }
         runState.onExecute { executeState_run() }
@@ -135,11 +111,10 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
         jumpState.onExecute { executeState_jump() }
         jumpState.onEnd { endState_jump() }
 
-        idleState.onBegin { animationState.setAnimation(0, "idle", true) }
+        idleState.onBegin { model.animation.play("steady") }
     }
 
 
-    //Simple testing function
     fun spriteCollision() {
         if (stateManager.getCurrentState() == runState) {
             stateManager.doStateChange(deathState)
@@ -149,11 +124,11 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
 
     //Fun begins -> implement each state
     fun beginState_run() {
-        animationState.setAnimation(0, "run", true)
+        model.animation.play("run")
     }
 
     fun executeState_run() {
-        this.modelView.x += 5
+        this.model.x += 5
         if (this.healthpoints <= 0) stateManager.doStateChange(deathState)
     }
 
@@ -162,7 +137,7 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
     }
 
     fun beginState_death() {
-        animationState.setAnimation(0, "death", false)
+        model.animation.play("dead", 1)
     }
 
     fun executeState_death() {
@@ -177,25 +152,26 @@ class MakeOwnEntityTemplate(val skeletonData: SkeletonData) {
     }
 
     fun beginState_jump() {
-        animationState.setAnimation(0, "jump", false)
+        model.animation.play("normalAttack", 1)
     }
 
     fun executeState_jump() {
         if (isAtMaxJumpHeight) {
-            if (baseLine - modelView.y > 0) modelView.y += movementSpeed
+            if (baseLine - model.y > 0) model.y += movementSpeed
             else {
                 stateManager.doStateChange(idleState)
                 isAtMaxJumpHeight = false
             }
         } else {
-            if (baseLine - modelView.y >= jumpHeight) isAtMaxJumpHeight = true
-            else modelView.y -= movementSpeed
+            if (baseLine - model.y >= jumpHeight) isAtMaxJumpHeight = true
+            else model.y -= movementSpeed
         }
     }
 
     fun endState_jump() {
-
+        bus.send(GroundedEvent())
     }
 
     //We can add even more states, as much as we want, e.g. hit, turn, getDamage, ...
+
 }
