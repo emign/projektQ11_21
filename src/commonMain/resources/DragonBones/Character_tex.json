@@ -1,0 +1,1 @@
+{"width":512,"SubTexture":[{"width":110,"y":1,"height":92,"name":"Body","x":148},{"width":145,"y":1,"height":179,"name":"Head","x":1},{"width":44,"y":95,"height":96,"name":"Upper Arm R","x":231},{"width":81,"y":95,"height":81,"name":"Lower Arm R","x":148}],"height":256,"name":"CharacterTest","imagePath":"Character_tex.png"}

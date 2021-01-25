@@ -1,6 +1,8 @@
 package Scenes
 
 //import fsm.Entity
+import DragonbonesEntityTemplate
+import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
@@ -15,35 +17,30 @@ class TestScene : Scene() {
 
         val bus = EventBus(this@TestScene)
 
-        addComponent(Input(this,bus))
-
-        val background = Image(resourcesVfs["spineboy-pma.png"].readBitmap()).apply {
-            //xy(0,0)
-
-            onClick {
-                println("geklickt")
-            }
-        }
-
-        addChild(background)
-
-
-
+        addComponent(Input(this, bus))
         repeat(50) {
 
-            val testEntity = MakeOwnEntityTemplate.build("spineboy-pro.skel", "spineboy-pma.atlas", 1.0f)
+            val testEntity = DragonbonesEntityTemplate.build(
+                "armatureName",
+                "DragonBones/Demon_ske.json",
+                "DragonBones/Demon_tex.json",
+                "DragonBones/Demon_tex.png",
+                bus
+            )
+
+            //val testSpine = MakeOwnEntityTemplate.build("spineboy-pro.skel", "spineboy-pma.atlas", 1.0f)
 
             container {
                 speed = 1.0
-                scale(0.5)
+                scale(1.0)
                 position(400, 800)
-                addChild(testEntity.modelView)
-                //solidRect(10.0, 10.0, Colors.RED).centered
+                addChild(testEntity.model)
             }
-            bus.register<IdleEvent>{testEntity.stateManager.doStateChange(testEntity.idleState)}
-            bus.register<RightEvent>{testEntity.stateManager.doStateChange(testEntity.runState)}
-            bus.register<JumpEvent>{testEntity.stateManager.doStateChange(testEntity.jumpState)}
+
+            bus.register<IdleEvent> { testEntity.stateManager.doStateChange(testEntity.idleState) }
+            bus.register<RightEvent> { testEntity.stateManager.doStateChange(testEntity.runState) }
+            bus.register<JumpEvent> { testEntity.stateManager.doStateChange(testEntity.jumpState) }
+
         }
-        solidRect(200, 1080).xy(1900, 0)
     }
 }

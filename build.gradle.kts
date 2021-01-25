@@ -25,6 +25,7 @@ korge {
 	dependencies {
 		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
 		add("commonMainApi", "com.soywiz.korlibs.korge:korge-swf:${korgeVersion}")
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-dragonbones:${korgeVersion}")
 	}
 
 // To enable all targets at once
