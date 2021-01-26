@@ -4,6 +4,7 @@ plugins {
 
 korge {
 	id = "com.sample.demo"
+	supportBox2d()
 
 	targetJvm()
 	targetJs()

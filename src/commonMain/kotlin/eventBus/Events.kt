@@ -1,6 +1,6 @@
 package eventBus
 
-import character.Physics
+import character.physic.Physics
 
 class JumpEvent()
 class RightEvent()

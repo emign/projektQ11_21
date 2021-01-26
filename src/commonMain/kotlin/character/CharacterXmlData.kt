@@ -17,7 +17,7 @@ data class CharacterXmlData(
     val specialAttack: Attack
 )
 
-abstract class Attack(
+open class Attack(
     val name: String,
     val damage: Int,
     val blockable: Boolean,
