@@ -21,12 +21,13 @@ kotlin {
 			languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
 			languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
 		}
-		commonMain{
+
+
+		val commonMain by getting {
 			dependencies{
-				implementation("io.ktor:ktor-kotlinMultiplatform:1.5.0")
+				implementation("io.ktor:ktor-client-core:1.5.0")
 			}
 		}
-
 
 	}
 }
