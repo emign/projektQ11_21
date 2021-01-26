@@ -2,6 +2,7 @@ package Scenes
 
 //import fsm.Entity
 import DragonbonesEntityTemplate
+import character.CharacterBase
 import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.*

@@ -1,12 +1,13 @@
 package character
 
+import character.physic.Physics
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korge.view.xy
 import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.async.launchAsap
+import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.Point
@@ -22,31 +23,35 @@ import kotlinx.coroutines.CoroutineScope
  * @property xmlData The data of the character. Should be read from an xml-File which contains all the data
  * @property bus The [EventBus] which is used for setting up and triggering events
  */
-class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDisplay, val bus: EventBus, val scope: CoroutineScope) : Container() {
+class CharacterBase(
+    val xmlFile: String,
+    val bus: EventBus,
+    val scope: CoroutineScope
+) : Container() {
     /**
      * create a new object of this class -> Better than direct initialization via constructor, here you can use the xmlReader
      * @param xmlFile the String-file of the character-xml. The xml has to be in the right format for reading characters
      * @param eventBus The event Bus which is used for setting up and triggering events
      */
-    suspend fun build(
-        xmlFile: String,
-        bus: EventBus
-    ): CharacterBase {
 
-        val characterXmlData: CharacterXmlData = resourcesVfs[xmlFile].readCharacterXmlData()
+    lateinit var model: KorgeDbArmatureDisplay
+    lateinit var characterXmlData: CharacterXmlData
 
-        val ske = resourcesVfs[characterXmlData.skeletonJsonFile].readString()
-        val tex = resourcesVfs[characterXmlData.textureJsonFile].readString()
-        val img = resourcesVfs[characterXmlData.imageFile].readBitmap()
+    fun buildXmlDataAndModel() {
+        this.scope.launchImmediately {
+            characterXmlData = resourcesVfs[xmlFile].readCharacterXmlData()
 
-        val factory = KorgeDbFactory()
+            val ske = resourcesVfs[characterXmlData.skeletonJsonFile].readString()
+            val tex = resourcesVfs[characterXmlData.textureJsonFile].readString()
+            val img = resourcesVfs[characterXmlData.imageFile].readBitmap()
 
-        val data = factory.parseDragonBonesData(Json.parse(ske)!!)
-        val atlas = factory.parseTextureAtlasData(Json.parse(tex)!!, img)
+            val factory = KorgeDbFactory()
 
-        val graphic = factory.buildArmatureDisplay(characterXmlData.dbName)!!
+            val data = factory.parseDragonBonesData(Json.parse(ske)!!)
+            val atlas = factory.parseTextureAtlasData(Json.parse(tex)!!, img)
 
-        return CharacterBase(characterXmlData, graphic, bus, bus.scope)
+            model = factory.buildArmatureDisplay(characterXmlData.dbName)!!
+        }
     }
 
 
@@ -62,13 +67,14 @@ class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDis
     var newScale: Double = this.scale
 
     /** physics manager for checking for intersection and updating positions and velocities       */
-    val activePhysics: Physics = Physics(this)
+    val activePhysics: Physics = Physics(this, bus)
 
     /** Make states from a manager          */
     val stateManager = createStateManager()
 
     val idleState = createState(stateManager)
-    val followState = createState(stateManager)
+    val walkRightState = createState(stateManager)
+    val walkLeftState = createState(stateManager)
     val turnState = createState(stateManager)
     val jumpState = createState(stateManager)
     val deathState = createState(stateManager)
@@ -94,8 +100,9 @@ class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDis
         //initialize states
         initStates()
         stateManager.setStartState(idleState)
+        //register physics
+        addComponent(activePhysics)
         //register events
-        //TODO
         bus.register<PlayerCollision> { onPlayerCollision(it.activePhysics) }
         bus.register<SpriteCollision> { onPlayerCollision(it.activePhysics) }
         bus.register<NormalAttackCollision> { onNormalAttackCollision(it.damage) }
@@ -117,13 +124,18 @@ class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDis
 
     /** Initilize the states of the character           */
     fun initStates() {
+
+        walkRightState.onBegin {  }
+        walkRightState.onExecute {  }
+        walkRightState.onEnd {  }
+
+        walkLeftState.onBegin {  }
+        walkLeftState.onExecute {  }
+        walkLeftState.onEnd {  }
+
         idleState.onBegin { beginState_idle() }
         idleState.onExecute { executeState_idle() }
         idleState.onEnd { endState_idle() }
-
-        followState.onBegin { beginState_follow() }
-        followState.onExecute { executeState_follow() }
-        followState.onEnd { endState_follow() }
 
         turnState.onBegin { beginState_turn() }
         turnState.onExecute { executeState_turn() }
@@ -160,14 +172,6 @@ class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDis
         this.scale = this.newScale
 
         this.model.xy(this.x, this.y)   //Maybe move the animation a bit, we will see...
-    }
-
-
-    /** pre-update positions and velocities     */
-    fun handlePhysics() {
-        //physics update the new positions and velocities
-        //TODO, physics.update()
-        activePhysics.timeStep()
     }
 
 
@@ -237,34 +241,13 @@ class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDis
     fun endState_idle() { /* Nothing in here */
     }
 
-
-    fun beginState_follow() {
-        this.timer = 0
-        if (xmlData.direction == 1) {
-            model.animation.play("walk_right")
-        } else if (xmlData.direction == 0) {
-            model.animation.play("walk_left")
-        }
-    }
-
-    fun executeState_follow() {
-        //TODO: Follow player and change to attackState if necessary
-        calculateCollisions()
-        this.position.x += this.xmlData.movementSpeed   //TODO: Update physics velocities
-        this.timer += 1
-    }
-
-    fun endState_follow() { /* Nothing in here */
-    }
-
-
     fun beginState_turn() {
-        xmlData.direction = this.xmlData.direction xor 1
-        model.animation.play("turn_${xmlData.direction}")
+        characterXmlData.direction = this.characterXmlData.direction xor 1
+        model.animation.play("turn_${characterXmlData.direction}")
     }
 
     fun executeState_turn() {
-        if (model.animation.isCompleted) stateManager.doStateChange(followState)
+        //if (model.animation.isCompleted) stateManager.doStateChange()
     }
 
     fun endState_turn() { /* Nothing in here */
@@ -273,16 +256,18 @@ class CharacterBase(val xmlData: CharacterXmlData, var model: KorgeDbArmatureDis
 
     fun beginState_jump() {
         this.timer = 0
-        if (xmlData.direction == 1) {
+        if (characterXmlData.direction == 1) {
             model.animation.play("jump_right", 1)
-        } else if (xmlData.direction == 0) {
+        } else if (characterXmlData.direction == 0) {
             model.animation.play("jump_left", 1)
         }
     }
 
     fun executeState_jump() {
-        //physics.performJump()
         timer += 1
+        if(model.animation.isCompleted) {
+            stateManager.doStateChange(stateManager.stateStack[stateManager.stateStack.size - 1])
+        }
     }
 
     fun endState_jump() { /* Nothing here */

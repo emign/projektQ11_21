@@ -21,6 +21,7 @@ apply(plugin = "korge")
 
 korge {
 	id = "com.sample.demo"
+	supportBox2d()
 
 	dependencies {
 		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
