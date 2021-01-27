@@ -1,8 +1,10 @@
 import com.soywiz.korge.gradle.*
 
+val ktor_version : String by project
 
 buildscript {
 	val korgePluginVersion: String by project
+
 
 	repositories {
 		mavenLocal()
@@ -56,7 +58,8 @@ kotlin {
 
 		val commonMain by getting {
 			dependencies{
-				implementation("io.ktor:ktor-client-core:1.5.0")
+				implementation("io.ktor:ktor-client-core:$ktor_version")
+				implementation("io.ktor:ktor-network:$ktor_version")
 			}
 		}
 
