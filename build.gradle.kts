@@ -30,11 +30,6 @@ korge {
 		add("commonMainApi", "com.soywiz.korlibs.korge:korge-dragonbones:${korgeVersion}")
 	}
 
-	dependencies {
-		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
-		add("commonMainApi", "com.soywiz.korlibs.korge:korge-swf:${korgeVersion}")
-	}
-
 // To enable all targets at once
 
 	//targetAll()
@@ -49,4 +44,21 @@ korge {
 	targetDesktop()
 	targetIos()
 	targetAndroidIndirect() // targetAndroidDirect()
+}
+
+kotlin {
+	sourceSets {
+		all {
+			languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+			languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+		}
+
+
+		val commonMain by getting {
+			dependencies{
+				implementation("io.ktor:ktor-client-core:1.5.0")
+			}
+		}
+
+	}
 }
