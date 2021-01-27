@@ -1,5 +1,4 @@
 import com.soywiz.korge.gradle.*
-import java.util.regex.Pattern.compile
 
 
 buildscript {
@@ -17,7 +16,9 @@ buildscript {
 	}
 }
 
-apply(plugin = "korge")
+plugins {
+	id("com.soywiz.korge")
+}
 
 korge {
 	id = "com.sample.demo"

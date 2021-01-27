@@ -1,6 +1,6 @@
 package character
 
-import character.physic.Physics
+import com.soywiz.korge.box2d.*
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.view.Container
@@ -15,6 +15,7 @@ import eventBus.*
 import fsm.createState
 import fsm.createStateManager
 import kotlinx.coroutines.CoroutineScope
+import org.jbox2d.dynamics.*
 
 
 /**
@@ -26,7 +27,8 @@ import kotlinx.coroutines.CoroutineScope
 class CharacterBase(
     val xmlFile: String,
     val bus: EventBus,
-    val scope: CoroutineScope
+    val scope: CoroutineScope,
+    val world: World
 ) : Container() {
     /**
      * create a new object of this class -> Better than direct initialization via constructor, here you can use the xmlReader
@@ -67,7 +69,7 @@ class CharacterBase(
     var newScale: Double = this.scale
 
     /** physics manager for checking for intersection and updating positions and velocities       */
-    val activePhysics: Physics = Physics(this, bus)
+    val activePhysics: Physics = Physics(this, bus,world)
 
     /** Make states from a manager          */
     val stateManager = createStateManager()
@@ -194,8 +196,6 @@ class CharacterBase(
 
     /** checked every frame in specific states, main collision method       */
     fun calculateCollisions() {
-        //
-        handlePhysics()
         //check for collisions with specific types
         //activePhysics.isPlayerCollision()
         //activePhysics.isSpriteCollision()
