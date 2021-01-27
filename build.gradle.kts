@@ -10,6 +10,9 @@ korge {
 	targetDesktop()
 	targetIos()
 	targetAndroidIndirect() // targetAndroidDirect()
+	supportDragonbones()
+	supportSpine()
+
 
 
 }

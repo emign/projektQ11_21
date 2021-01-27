@@ -1,14 +1,8 @@
 package fsm
 
-import com.dragonbones.model.DragonBonesData
-import com.dragonbones.model.TextureAtlasData
-import com.esotericsoftware.spine.readSkeletonBinary
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
 import com.soywiz.korge.view.addUpdater
-import com.soywiz.korge.view.position
-import com.soywiz.korge.view.scale
-import com.soywiz.korim.atlas.readAtlas
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
