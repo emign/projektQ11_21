@@ -1,7 +1,10 @@
 import com.soywiz.korge.gradle.*
 
+val ktor_version : String by project
+
 buildscript {
 	val korgePluginVersion: String by project
+
 
 	repositories {
 		mavenLocal()
@@ -9,18 +12,25 @@ buildscript {
 		maven { url = uri("https://plugins.gradle.org/m2/") }
 		mavenCentral()
 		google()
-		maven { url = uri("https://dl.bintray.com/kotlin/kotlin-dev") }
-		maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
 	}
 	dependencies {
 		classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korgePluginVersion")
 	}
 }
 
-apply<KorgeGradlePlugin>()
+plugins {
+	id("com.soywiz.korge")
+}
 
 korge {
 	id = "com.sample.demo"
+	supportBox2d()
+
+	dependencies {
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-swf:${korgeVersion}")
+		add("commonMainApi", "com.soywiz.korlibs.korge:korge-dragonbones:${korgeVersion}")
+	}
 
 // To enable all targets at once
 
@@ -36,4 +46,22 @@ korge {
 	targetDesktop()
 	targetIos()
 	targetAndroidIndirect() // targetAndroidDirect()
+}
+
+kotlin {
+	sourceSets {
+		all {
+			languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+			languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+		}
+
+
+		val commonMain by getting {
+			dependencies{
+				implementation("io.ktor:ktor-client-core:$ktor_version")
+				implementation("io.ktor:ktor-network:$ktor_version")
+			}
+		}
+
+	}
 }
