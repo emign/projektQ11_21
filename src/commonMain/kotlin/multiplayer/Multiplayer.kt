@@ -8,7 +8,7 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 
 @InternalAPI
-class MultiplayerServer(private val ip : String,private val port : Int,private val clientCount : Int) {
+class MultiplayerServer(private val port : Int,private val clientCount : Int) {
 
     lateinit var server : ServerSocket
 
@@ -17,11 +17,11 @@ class MultiplayerServer(private val ip : String,private val port : Int,private v
     init {
         val builder = aSocket(SelectorManager(Dispatchers.Default))
 
-        server = builder.tcp().bind(hostname = ip,port = port)
+        server = builder.tcp().bind(hostname = "127.0.0.1",port = port)
         println("Started echo telnet server at ${server.localAddress}")
         runBlockingNoJs {
+            while (true) {
                 val socket = server.accept()
-                println("accept")
 
                 launch(Dispatchers.Default) {
                     println("Socket accepted: ${socket.remoteAddress}")
@@ -41,6 +41,7 @@ class MultiplayerServer(private val ip : String,private val port : Int,private v
                         socket.close()
                     }
                 }
+            }
         }
     }
 
