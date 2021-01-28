@@ -14,7 +14,7 @@ object GameModule : Module() {
     override suspend fun AsyncInjector.configure() {
         mapPrototype { TestScene() }
 
-        lastGlobalGameWindow?.fullscreen=true
+        lastGlobalGameWindow?.fullscreen=false
     }
 
 }
