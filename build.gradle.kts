@@ -25,12 +25,9 @@ plugins {
 korge {
 	id = "com.sample.demo"
 	supportBox2d()
-
-	dependencies {
-		add("commonMainApi", "com.soywiz.korlibs.korge:korge-spine:${korgeVersion}")
-		add("commonMainApi", "com.soywiz.korlibs.korge:korge-swf:${korgeVersion}")
-		add("commonMainApi", "com.soywiz.korlibs.korge:korge-dragonbones:${korgeVersion}")
-	}
+	supportSpine()
+	supportDragonbones()
+	supportSwf()
 
 // To enable all targets at once
 

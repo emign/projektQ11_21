@@ -1,4 +1,5 @@
 import Scenes.*
+import com.soywiz.korge.lastGlobalGameWindow
 import com.soywiz.korge.scene.*
 import com.soywiz.korinject.*
 import com.soywiz.korma.geom.*
