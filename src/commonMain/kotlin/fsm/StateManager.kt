@@ -42,7 +42,7 @@ class StateManager {
         active = true
     }
 
-    //creates a new fsm.old.State for the object called "owner" -> the state only affects him
+    //creates a new State and adds it to the Manager
     fun createState(onBegin: () -> Unit = {}, onExecute: () -> Unit = {}, onEnd: () -> Unit = {}): StateExecutor {
         val stateBase = State().apply {
             begin = onBegin
