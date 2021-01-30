@@ -1,5 +1,7 @@
 package eventBus
 
+import fsm.StateExecutor
+
 class JumpEvent()
 class RightEvent()
 class LeftEvent()
@@ -12,3 +14,6 @@ class GroundedEvent()
 class NormalAttackCollision(val damage: Double)
 class RangedAttackCollision(val damage: Double)
 class SpecialAttackCollision(val damage: Double)
+
+//StateEvents
+class StateTransition(val state: StateExecutor)

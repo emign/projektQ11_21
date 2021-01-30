@@ -3,7 +3,8 @@ package fsm
 import kotlin.reflect.KClass
 
 /**
- * Create a new [StateMachine] and optionally apply a callback
+ * Handles multiple [StateExecutor]s and calls actions. All created [StateExecutor]s are stored here
+ * This class executes the actual code contained in each state
  */
 
 class StateManager {
@@ -15,6 +16,8 @@ class StateManager {
     //list of all states of the class
     private var states = mutableMapOf<Int, StateExecutor>()
 
+    private var active: Boolean = false
+
     //the current state the
     private var currentState: StateExecutor = StateExecutor()
 
@@ -23,14 +26,21 @@ class StateManager {
 
     //changes the current state
     fun doStateChange(new: StateExecutor) {
+        active = false
         currentState.callEnd()
         this.stateStack.add(stateStack.size, currentState)
         new.callBegin()
         currentState = new
+        active = true
     }
 
     //sets up the starting state
-    fun setStartState(state: StateExecutor) = doStateChange(state)
+    fun setStartState(state: StateExecutor) {
+        active = false
+        state.callBegin()
+        currentState = state
+        active = true
+    }
 
     //creates a new fsm.old.State for the object called "owner" -> the state only affects him
     fun createState(onBegin: () -> Unit = {}, onExecute: () -> Unit = {}, onEnd: () -> Unit = {}): StateExecutor {
@@ -46,7 +56,9 @@ class StateManager {
 
     //updates the current state
     fun updateCurrentState() {
-        currentState.callExecute()
+        if (active) {
+            currentState.callExecute()
+        }
     }
 
     fun getCurrentState(): StateExecutor {

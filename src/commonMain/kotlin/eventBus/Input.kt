@@ -4,6 +4,9 @@ import com.soywiz.korev.*
 import com.soywiz.korge.component.*
 import com.soywiz.korge.view.*
 
+/**
+ * First approach for an input system. Has to be updated
+ */
 class Input(override val view: View, private val bus : EventBus) : KeyComponent {
 
     private var onGround = true

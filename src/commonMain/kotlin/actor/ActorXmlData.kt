@@ -1,14 +1,64 @@
-package character
+package actor
 
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.serialization.xml.readXml
 
 /**
+ * Wrapper for storing information from an xml file read by [readCharacterXmlData]
+ */
+data class ActorXmlData(
+    val name: String,
+    val dbName: String,
+    val skeletonJsonFile: String,
+    val textureJsonFile: String,
+    val imageFile: String,
+    val healthpoints: Double,
+    val movementSpeed: Double,
+    val jumpHeight: Double,
+    var direction: Int,
+    val normalAttack: Attack,
+    val rangedAttack: Attack,
+    val specialAttack: Attack
+)
+
+open class Attack(
+    val name: String,
+    val damage: Int,
+    val blockable: Boolean,
+    val cooldown: TimeSpan,
+    val isReady: Boolean
+)
+
+class NormalAttack(
+    name: String,
+    damage: Int,
+    blockable: Boolean,
+    cooldown: TimeSpan,
+    isReady: Boolean
+) : Attack(name, damage, blockable, cooldown, isReady)
+
+class RangedAttack(
+    name: String,
+    damage: Int,
+    blockable: Boolean,
+    cooldown: TimeSpan,
+    isReady: Boolean
+) : Attack(name, damage, blockable, cooldown, isReady)
+
+class SpecialAttack(
+    name: String,
+    damage: Int,
+    blockable: Boolean,
+    cooldown: TimeSpan,
+    isReady: Boolean
+) : Attack(name, damage, blockable, cooldown, isReady)
+
+/**
  * Read a Character with his animations and attacks from an xml file
  * See Test.xml in resources for an example xml in the right format
  */
-suspend fun VfsFile.readCharacterXmlData(): CharacterXmlData {
+suspend fun VfsFile.readCharacterXmlData(): ActorXmlData {
     val xml = this.readXml()
 
     //basic properties
@@ -32,7 +82,7 @@ suspend fun VfsFile.readCharacterXmlData(): CharacterXmlData {
         val cooldown = TimeSpan(it.attribute("cooldown")?.toDouble() ?: 0.0)
         val isReady: Boolean = it.attribute("isready") == "true"
 
-        //create character.Attack
+        //create actor.Attack
         val newAttack = Attack(attackName, damage, blockable, cooldown, isReady)
         attacks.add(newAttack)
     }
@@ -42,7 +92,7 @@ suspend fun VfsFile.readCharacterXmlData(): CharacterXmlData {
     val specialAttack = attacks.filter { it.name == "special" }[0]
     val rangedAttack = attacks.filter { it.name == "ranged" }[0]
 
-    val characterXmlData = CharacterXmlData(
+    val characterXmlData = ActorXmlData(
         name,
         dbName,
         skeletonJsonFile,

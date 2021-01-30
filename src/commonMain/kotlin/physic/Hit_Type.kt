@@ -1,6 +1,6 @@
 package physic
 
-import character.*
+import actor.CharacterBase
 import com.soywiz.korge.view.*
 
 abstract class Hit_Type() {

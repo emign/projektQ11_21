@@ -1,7 +1,7 @@
 package fsm
 
 /**
- * This class holds the actual states of an object [owner]
+ * This class holds an actual [State] and can execute it
  */
 
 class StateExecutor(val state: State = State()) {
@@ -44,5 +44,9 @@ class StateExecutor(val state: State = State()) {
         val obj = other as StateExecutor
 
         return this.state == other.state
+    }
+
+    override fun hashCode(): Int {
+        return state.hashCode()
     }
 }
