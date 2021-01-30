@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import physic.Physics
 
 /**
- * A MovingActor is an [Actor] which can move on screen
+ * A MovingActor is an [Actor] which can move on screen and have states
  * @param scope The current scope where the actor is initialized; used for the [EventBus]
  * @param actorXmlData The data read by [readCharacterXmlData]
  */
