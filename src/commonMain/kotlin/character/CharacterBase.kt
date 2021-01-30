@@ -27,7 +27,7 @@ class CharacterBase(
     val xmlFile: String,
     val bus: EventBus,
     val scope: CoroutineScope
-) : Container(), Stateable {
+) : Container(), StateUser {
     /**
      * create a new object of this class -> Better than direct initialization via constructor, here you can use the xmlReader
      * @param xmlFile the String-file of the character-xml. The xml has to be in the right format for reading characters
