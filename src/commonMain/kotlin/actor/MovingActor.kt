@@ -3,6 +3,7 @@ package actor
 import com.soywiz.korma.geom.Point
 import eventBus.EventBus
 import fsm.StateManager
+import fsm.StateUser
 import fsm.declareState
 import fsm.useStates
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +14,7 @@ import physic.Physics
  * @param scope The current scope where the actor is initialized; used for the [EventBus]
  * @param actorXmlData The data read by [readCharacterXmlData]
  */
-abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXmlData): Actor() {
+abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXmlData): Actor(), StateUser {
 
     var velocity: Point = Point(0.0, -1.0 * actorXmlData.jumpHeight)
     var lastVelocity: Point = Point(0.0, 0.0)

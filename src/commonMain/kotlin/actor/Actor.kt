@@ -8,7 +8,7 @@ import fsm.StateUser
  * An actor is basically an object which you can see on screen (Player, Enemy, Ground, ...)
  */
 
-abstract class Actor() : Container(), StateUser {
+abstract class Actor() : Container() {
 
     var position: Point = Point(this.y, this.y)
     var lastPosition: Point = position
