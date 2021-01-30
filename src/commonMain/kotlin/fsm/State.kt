@@ -1,54 +1,41 @@
-import kotlin.reflect.KClass
+package fsm
 
 /**
- * This class holds the actual states of an object [owner]
+ *  base class for a data structure base. This is only used internal, normal states are [StateExecutor]
  */
 
-class State<T>(private val owner: T, val codeHandler: StateCodeHandler<T>) {
+class State {
 
-    //add code to the onBegin lambda of [State]
-    fun onBegin(body: T.() -> Unit) {
-        codeHandler.begin = body
+    companion object {
+        var id: Int = 0
     }
 
-    //add code to the onExecute lambda of [State]
-    fun onExecute(body: T.() -> Unit) {
-        codeHandler.execute = body
+    val id: Int = Companion.id
+
+    init {
+        Companion.id += 1
     }
 
-    //add code to the onEnd lambda of [State]
-    fun onEnd(body: T.() -> Unit) {
-        codeHandler.end = body
-    }
+    //the actions the state contains
+    var begin: () -> Unit = {}
+    var execute: () -> Unit = {}
+    var end: () -> Unit = {}
 
-    //calls the begin function
-    fun callBegin() {
-        codeHandler.begin(owner)
-    }
-
-    //calls the execute function
-    fun callExecute() {
-        codeHandler.execute(owner)
-    }
-
-    //calls the end function
-    fun callEnd() {
-        codeHandler.end(owner)
-    }
-
-    //random crap, not important
-
+    //extra stuff, not important
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (other::class != State::class) return false
-        val obj = other as State<*>
+        val obj = other as State
 
-        return this.codeHandler == other.codeHandler && this.owner == other.owner
+        return this.begin == other.begin && this.execute == other.execute && this.end == other.end && this.id == other.id
     }
 
     override fun hashCode(): Int {
-        var result = owner?.hashCode() ?: 0
-        result = 31 * result + codeHandler.hashCode()
+        var result = id.hashCode()
+        result = 31 * result + begin.hashCode()
+        result = 31 * result + execute.hashCode()
+        result = 31 * result + end.hashCode()
         return result
     }
+
 }

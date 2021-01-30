@@ -1,53 +1,79 @@
 package fsm
 
-import State
-import StateCodeHandler
-import character.CharacterBase
-import com.soywiz.korio.lang.currentThreadId
+import kotlin.reflect.KClass
 
 /**
  * Create a new [StateMachine] and optionally apply a callback
  */
 
-inline fun <T/*:fsm.Entity or whatever the base type is*/> T.createStateManager(callback: StateManager<T>.() -> Unit = {}): StateManager<T> {
-    return StateManager<T>().apply { callback() }
+interface Stateable {
+    val manager: StateManager
+
+    fun setStartState(state: StateExecutor) {
+        manager.setStartState(state)
+    }
+
+    fun doStateChange(state: StateExecutor) {
+        manager.doStateChange(state)
+    }
+
+    fun updateCurrentState() {
+        manager.updateCurrentState()
+    }
+
+    fun getCurrentState(): StateExecutor {
+        return manager.getCurrentState()
+    }
 }
 
-fun <T/*: Whatever the base type for having states is*/> T.createState(stateManager: StateManager<T>): State<T> {
-    return stateManager.createState(this)
+inline fun <reified T: Stateable> T.declareState(): StateExecutor {
+    val currentManager = StateManager.stateMachines[T::class]
+    if (currentManager != null) {
+        return currentManager.createState()
+    }
+    error("You have to declare a manager first!")
+}
+
+inline fun <reified T: Stateable> T.useStates(callback: StateManager.() -> Unit = {}): StateManager {
+    val manager = StateManager()
+    StateManager.stateMachines[T::class] = manager
+    manager.apply { callback() }
+    return manager
 }
 
 /**
  * This class manages all the states of a class-object(for example [Entity]).
  */
-class StateManager<T> {
+class StateManager {
+
+    companion object {
+        val stateMachines: MutableMap<KClass<*>, StateManager> = mutableMapOf()
+    }
 
     //list of all states of the class
-    private var states = mutableMapOf<Int, State<T>>()
+    private var states = mutableMapOf<Int, StateExecutor>()
 
     //the current state the
-    private lateinit var currentState: State<T>
+    private var currentState: StateExecutor = StateExecutor()
 
     //all finished states are stored here to maybe go to the previous state if necessary -> not used yet
-    val stateStack = mutableListOf<State<T>>()
+    val stateStack = mutableListOf<StateExecutor>()
 
     //changes the current state
-    fun doStateChange(new: State<T>) {
-        if(::currentState.isInitialized) {
-            currentState.callEnd()
-            this.stateStack.add(stateStack.size, currentState)
-        }
+    fun doStateChange(new: StateExecutor) {
+        currentState.callEnd()
+        this.stateStack.add(stateStack.size, currentState)
+        new.callBegin()
         currentState = new
-        currentState.callBegin()
     }
 
     //sets up the starting state
-    fun setStartState(state: State<T>) = doStateChange(state)
+    fun setStartState(state: StateExecutor) = doStateChange(state)
 
-    //creates a new State for the object called "owner" -> the state only affects him
-    fun createState(owner: T): State<T> {
-        val stateBase = StateCodeHandler<T>()
-        val state = State(owner, stateBase)
+    //creates a new fsm.old.State for the object called "owner" -> the state only affects him
+    fun createState(): StateExecutor {
+        val stateBase = State()
+        val state = StateExecutor(stateBase)
         this.states[stateBase.id] = state
         return state
     }
@@ -57,7 +83,7 @@ class StateManager<T> {
         currentState.callExecute()
     }
 
-    fun getCurrentState(): State<T> {
-        if(::currentState.isInitialized) return currentState else error("currentState is null")
+    fun getCurrentState(): StateExecutor {
+        return currentState
     }
 }

@@ -12,8 +12,7 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.Point
 import eventBus.*
-import fsm.createState
-import fsm.createStateManager
+import fsm.*
 import kotlinx.coroutines.CoroutineScope
 import org.jbox2d.dynamics.*
 
@@ -27,9 +26,8 @@ import org.jbox2d.dynamics.*
 class CharacterBase(
     val xmlFile: String,
     val bus: EventBus,
-    val scope: CoroutineScope,
-    val world: World
-) : Container() {
+    val scope: CoroutineScope
+) : Container(), Stateable {
     /**
      * create a new object of this class -> Better than direct initialization via constructor, here you can use the xmlReader
      * @param xmlFile the String-file of the character-xml. The xml has to be in the right format for reading characters
@@ -69,21 +67,18 @@ class CharacterBase(
     var newScale: Double = this.scale
 
     /** physics manager for checking for intersection and updating positions and velocities       */
-    val activePhysics: Physics = Physics(this, bus,world)
+    //val activePhysics: Physics = Physics(this, bus, world)
 
-    /** Make states from a manager          */
-    val stateManager = createStateManager()
-
-    val idleState = createState(stateManager)
-    val walkRightState = createState(stateManager)
-    val walkLeftState = createState(stateManager)
-    val turnState = createState(stateManager)
-    val jumpState = createState(stateManager)
-    val deathState = createState(stateManager)
-    val normalAttackState = createState(stateManager)
-    val rangedAttackState = createState(stateManager)
-    val specialAttackState = createState(stateManager)
-    val damageState = createState(stateManager)
+    override val manager: StateManager = useStates()
+    val idleState = declareState()
+    val walkState = declareState()
+    val turnState = declareState()
+    val jumpState = declareState()
+    val deathState = declareState()
+    val normalAttackState = declareState()
+    val rangedAttackState = declareState()
+    val specialAttackState = declareState()
+    val damageState = declareState()
 
 
     init {
@@ -100,13 +95,14 @@ class CharacterBase(
     /** executed once at the beginning      */
     fun onCreate() {
         //initialize states
+        buildXmlDataAndModel()
         initStates()
-        stateManager.setStartState(idleState)
+        setStartState(idleState)
         //register physics
-        addComponent(activePhysics)
+        //addComponent(activePhysics)
         //register events
-        bus.register<PlayerCollision> { onPlayerCollision(it.activePhysics) }
-        bus.register<SpriteCollision> { onPlayerCollision(it.activePhysics) }
+        //bus.register<PlayerCollision> { onPlayerCollision(it.activePhysics) }
+        //bus.register<SpriteCollision> { onPlayerCollision(it.activePhysics) }
         bus.register<NormalAttackCollision> { onNormalAttackCollision(it.damage) }
         bus.register<RangedAttackCollision> { onRangedAttackCollision(it.damage) }
         bus.register<SpecialAttackCollision> { onSpecialAttackCollision(it.damage) }
@@ -114,7 +110,7 @@ class CharacterBase(
 
     /** executed every frame        */
     fun onExecute() {
-        stateManager.updateCurrentState()
+        updateCurrentState()
         updateTranslation()
     }
 
@@ -123,17 +119,12 @@ class CharacterBase(
         this.removeFromParent()
     }
 
-
     /** Initilize the states of the character           */
     fun initStates() {
 
-        walkRightState.onBegin {  }
-        walkRightState.onExecute {  }
-        walkRightState.onEnd {  }
-
-        walkLeftState.onBegin {  }
-        walkLeftState.onExecute {  }
-        walkLeftState.onEnd {  }
+        walkState.onBegin { beginState_walk() }
+        walkState.onExecute { executeState_walk() }
+        walkState.onEnd { endState_walk() }
 
         idleState.onBegin { beginState_idle() }
         idleState.onExecute { executeState_idle() }
@@ -186,11 +177,11 @@ class CharacterBase(
 
     //maybe?
     fun addPhysics() {
-        activePhysics.isActive = true
+        //activePhysics.isActive = true
     }
 
     fun removePhysics() {
-        activePhysics.isActive = false
+        //activePhysics.isActive = false
     }
 
 
@@ -205,12 +196,12 @@ class CharacterBase(
 
 
     //collision callbacks
-    fun onPlayerCollision(activePhysicsOther: Physics) {
+    fun onPlayerCollision(/*activePhysicsOther: Physics*/) {
         //physics.calculate Collision and direction of collision
         //maybe change state or something...
     }
 
-    fun onSpriteCollision(activePhysicsOther: Physics) {
+    fun onSpriteCollision(/*activePhysicsOther: Physics*/) {
         //do nothing for now -> collision with other AI objects
     }
 
@@ -231,7 +222,7 @@ class CharacterBase(
 
     fun beginState_idle() {
         this.timer = 0
-        model.animation.play("idle")
+        model.animation.play("steady")
     }
 
     fun executeState_idle() {
@@ -239,6 +230,18 @@ class CharacterBase(
     }
 
     fun endState_idle() { /* Nothing in here */
+    }
+
+    fun beginState_walk() {
+        model.animation.play("run")
+    }
+
+    fun executeState_walk() {
+
+    }
+
+    fun endState_walk() {
+
     }
 
     fun beginState_turn() {
@@ -265,8 +268,8 @@ class CharacterBase(
 
     fun executeState_jump() {
         timer += 1
-        if(model.animation.isCompleted) {
-            stateManager.doStateChange(stateManager.stateStack[stateManager.stateStack.size - 1])
+        if (model.animation.isCompleted) {
+            doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
     }
 
@@ -300,7 +303,7 @@ class CharacterBase(
         timer += 1
         //check if he collides with something -> this can take damage
         if (model.animation.isCompleted) {
-            stateManager.doStateChange(stateManager.stateStack[stateManager.stateStack.size - 1])
+            doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
     }
 
@@ -317,7 +320,7 @@ class CharacterBase(
     fun executeState_rangedAttack() {
         timer += 1
         if (model.animation.isCompleted) {
-            stateManager.doStateChange(stateManager.stateStack[stateManager.stateStack.size - 1])
+            doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
     }
 
@@ -335,7 +338,7 @@ class CharacterBase(
         timer += 1
         //check if he collides with something -> this can take damage
         if (model.animation.isCompleted) {
-            stateManager.doStateChange(stateManager.stateStack[stateManager.stateStack.size - 1])
+            doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
     }
 
@@ -352,7 +355,7 @@ class CharacterBase(
     fun executeState_damage() {
         timer += 1
         if (model.animation.isCompleted) {
-            stateManager.doStateChange(stateManager.stateStack[stateManager.stateStack.size - 1])
+            doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
     }
 
