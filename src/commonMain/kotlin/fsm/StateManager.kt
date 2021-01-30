@@ -43,7 +43,7 @@ class StateManager {
     }
 
     //creates a new State and adds it to the Manager
-    fun createState(onBegin: () -> Unit = {}, onExecute: () -> Unit = {}, onEnd: () -> Unit = {}): StateExecutor {
+    fun createState(onBegin: () -> Unit = {}, onExecute: (dt: Double) -> Unit = {}, onEnd: () -> Unit = {}): StateExecutor {
         val stateBase = State().apply {
             begin = onBegin
             execute = onExecute
@@ -55,9 +55,9 @@ class StateManager {
     }
 
     //updates the current state
-    fun updateCurrentState() {
+    fun updateCurrentState(dt: Double) {
         if (active) {
-            currentState.callExecute()
+            currentState.callExecute(dt)
         }
     }
 

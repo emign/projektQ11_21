@@ -15,8 +15,8 @@ interface StateUser {
         manager.doStateChange(state)
     }
 
-    fun updateCurrentState() {
-        manager.updateCurrentState()
+    fun updateCurrentState(dt: Double) {
+        manager.updateCurrentState(dt)
     }
 
     fun getCurrentState(): StateExecutor {
@@ -29,7 +29,7 @@ interface StateUser {
  * Optionally you can pass in lambdas for onBegin, onExecute and onEnd
  * Keep in mind to first create a [StateManager] with [useStates] to avoid errors
  */
-inline fun <reified T: StateUser> T.declareState(noinline onBegin: () -> Unit = {}, noinline onExecute: () -> Unit = {}, noinline onEnd: () -> Unit = {}): StateExecutor {
+inline fun <reified T: StateUser> T.declareState(noinline onBegin: () -> Unit = {}, noinline onExecute: (dt: Double) -> Unit = {}, noinline onEnd: () -> Unit = {}): StateExecutor {
     val currentManager = StateManager.stateMachines[T::class]
     if (currentManager != null) {
         return currentManager.createState(onBegin, onExecute, onEnd)

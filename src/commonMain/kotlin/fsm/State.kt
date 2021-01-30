@@ -18,7 +18,7 @@ class State {
 
     //the actions the state contains
     var begin: () -> Unit = {}
-    var execute: () -> Unit = {}
+    var execute: (dt: Double) -> Unit = {}
     var end: () -> Unit = {}
 
     //extra stuff, not important

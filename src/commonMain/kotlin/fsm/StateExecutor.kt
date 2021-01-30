@@ -12,7 +12,7 @@ class StateExecutor(val state: State = State()) {
     }
 
     //add code to the onExecute lambda of [fsm.old.State]
-    fun onExecute(body: () -> Unit) {
+    fun onExecute(body: (dt: Double) -> Unit) {
         state.execute = body
     }
 
@@ -27,8 +27,8 @@ class StateExecutor(val state: State = State()) {
     }
 
     //calls the execute function
-    fun callExecute() {
-        state.execute()
+    fun callExecute(dt: Double) {
+        state.execute(dt)
     }
 
     //calls the end function

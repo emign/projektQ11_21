@@ -1,5 +1,6 @@
 package actor
 
+import actor.actors.Platform
 import com.soywiz.korge.box2d.*
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
@@ -49,6 +50,8 @@ class CharacterBase(
         }
     }
 
+    override val physics: Physics = Physics()
+
 
     init {
         /** set things up ...       */
@@ -77,7 +80,7 @@ class CharacterBase(
 
     /** executed every frame        */
     override fun onExecute(dt: Double) {
-        updateCurrentState()
+        updateCurrentState(dt)
         updateGraphics()
     }
 
@@ -103,11 +106,11 @@ class CharacterBase(
         onDelete()
     }
 
-    override val physics: Physics = Physics()
-
     override fun initEvents() {
-        //bus.register<PlayerCollision> { onPlayerCollision(it.activePhysics) }
-        //bus.register<SpriteCollision> { onPlayerCollision(it.activePhysics) }
+        bus.register<PlayerCollision> { onPlayerCollision(it.activePhysics) }
+        bus.register<EnemyCollision> { onPlayerCollision(it.activePhysics) }
+        bus.register<GroundCollision> { onGroundCollision() }
+        bus.register<PlatformCollision> { onPlatformCollision(it.platform) }
         bus.register<NormalAttackCollision> { onNormalAttackCollision(it.damage) }
         bus.register<RangedAttackCollision> { onRangedAttackCollision(it.damage) }
         bus.register<SpecialAttackCollision> { onSpecialAttackCollision(it.damage) }
@@ -136,12 +139,12 @@ class CharacterBase(
 
 
     //collision callbacks
-    override fun onPlayerCollision(/*activePhysicsOther: Physics*/) {
+    override fun onPlayerCollision(activePhysicsOther: Physics) {
         //physics.calculate Collision and direction of collision
         //maybe change state or something...
     }
 
-    override fun onEnemyCollision(/*activePhysicsOther: Physics*/) {
+    override fun onEnemyCollision(activePhysicsOther: Physics) {
         //do nothing for now -> collision with other AI objects
     }
 
@@ -149,7 +152,7 @@ class CharacterBase(
         TODO("Not yet implemented")
     }
 
-    override fun onPlatformCollision() {
+    override fun onPlatformCollision(platform: Platform) {
         TODO("Not yet implemented")
     }
 
@@ -169,14 +172,14 @@ class CharacterBase(
     /** Here's where the fun begins. Implementing all states (They're currently 9)      */
 
     override fun beginState_idle() {
-        println("Ich beginne nichts zu tun")
         this.timer = 0
-        model.animation.play("steady")
+        model.animation.play("steady") //TODO(Play idle based on direction)
     }
 
-    override fun executeState_idle() {
-        println("Ich bin dabei, nichts zu tun")
+    override fun executeState_idle(dt: Double) {
         timer += 1
+        calculateCollisions()
+        physics.update(dt)
     }
 
     override fun endState_idle() { /* Nothing in here */
@@ -185,12 +188,15 @@ class CharacterBase(
 
     override fun beginState_walk() {
         println("Ich beginne zu laufen")
-        model.animation.play("run")
+        timer = 0
+        model.animation.play("run") //TODO(Play run based on direction)
     }
 
-    override fun executeState_walk() {
+    override fun executeState_walk(dt: Double) {
         println("Ich bin dabei zu laufen")
-        position.x += 5
+        timer += 1
+        calculateCollisions()
+        physics.update(dt)
     }
 
     override fun endState_walk() {
@@ -198,12 +204,16 @@ class CharacterBase(
     }
 
     override fun beginState_turn() {
+        timer = 0
         direction = this.direction xor 1
         model.animation.play("turn_${direction}")
     }
 
-    override fun executeState_turn() {
-        //if (model.animation.isCompleted) stateManager.doStateChange()
+    override fun executeState_turn(dt: Double) {
+        timer += 1
+        calculateCollisions()
+        physics.update(dt)
+        if (model.animation.isCompleted) bus.send(StateTransition(walkState))
     }
 
     override fun endState_turn() { /* Nothing in here */
@@ -219,11 +229,11 @@ class CharacterBase(
         }
     }
 
-    override fun executeState_jump() {
+    override fun executeState_jump(dt: Double) {
         timer += 1
-        if (model.animation.isCompleted) {
-            doStateChange(manager.stateStack[manager.stateStack.size - 1])
-        }
+        calculateCollisions()
+        physics.update(dt)
+        if (model.animation.isCompleted) model.animation.play("steady") //TODO(Play idle based on direction)
     }
 
     override fun endState_jump() { /* Nothing here */
@@ -233,10 +243,10 @@ class CharacterBase(
     override fun beginState_die() {
         this.disablePhysics()
         this.timer = 0
-        model.animation.play("die", 1)
+        model.animation.play("die", 1)  //TODO(die animation based on direction)
     }
 
-    override fun executeState_die() {
+    override fun executeState_die(dt: Double) {
         timer += 1
         if (model.animation.isCompleted) {
             this.kill()
@@ -249,14 +259,16 @@ class CharacterBase(
 
     override fun beginState_normalAttack() {
         timer = 0
-        model.animation.play("normal_attack", 1)
+        model.animation.play("normal_attack", 1)    //TODO(animation based on direction)
     }
 
-    override fun executeState_normalAttack() {
+    override fun executeState_normalAttack(dt: Double) {
         timer += 1
         //check if he collides with something -> this can take damage
+        calculateCollisions()
+        physics.update(dt)
         if (model.animation.isCompleted) {
-            doStateChange(manager.stateStack[manager.stateStack.size - 1])
+            bus.send(StateTransition(idleState))
         }
     }
 
@@ -266,14 +278,16 @@ class CharacterBase(
 
     override fun beginState_rangedAttack() {
         timer = 0
-        model.animation.play("ranged_attack", 1)
-        //create a new flying object -> check for collision -> apply damage
+        model.animation.play("ranged_attack", 1)       //TODO(animation based on direction)
+        //TODO(create a new flying object -> check for collision -> apply damage)
     }
 
-    override fun executeState_rangedAttack() {
+    override fun executeState_rangedAttack(dt: Double) {
         timer += 1
+        calculateCollisions()
+        physics.update(dt)
         if (model.animation.isCompleted) {
-            doStateChange(manager.stateStack[manager.stateStack.size - 1])
+            bus.send(StateTransition(idleState))
         }
     }
 
@@ -283,13 +297,14 @@ class CharacterBase(
 
     override fun beginState_specialAttack() {
         timer = 0
-        model.animation.play("special_attack", 1)
-        //maybe shoot something or ...
+        model.animation.play("special_attack", 1)   //TODO(animation based on direction)
+        //TODO(maybe shoot something or ...)
     }
 
-    override fun executeState_specialAttack() {
+    override fun executeState_specialAttack(dt: Double) {
         timer += 1
-        //check if he collides with something -> this can take damage
+        //no physics update for now
+        calculateCollisions()
         if (model.animation.isCompleted) {
             doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
@@ -302,14 +317,16 @@ class CharacterBase(
     override fun beginState_getDamage() {
         timer = 0
         println("Ich beginne Schaden zu erhalten")
-        model.animation.play("win", 1)
+        model.animation.play("win", 1)  //TODO(correct animation based on direction)
         //model.animation.play("get_damage", 1)
         //play sound
     }
 
-    override fun executeState_getDamage() {
+    override fun executeState_getDamage(dt: Double) {
         println("Ich bin dabei Schaden zu erhalten")
         timer += 1
+        calculateCollisions()
+        physics.update(dt)
         if (model.animation.isCompleted) {
             bus.send(StateTransition(idleState))
         }

@@ -1,5 +1,6 @@
 package actor
 
+import actor.actors.Platform
 import com.soywiz.korma.geom.Point
 import eventBus.EventBus
 import fsm.StateManager
@@ -50,10 +51,10 @@ abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXml
     abstract fun disablePhysics()
 
     //Collision callbacks, triggered by events
-    abstract fun onPlayerCollision()
-    abstract fun onEnemyCollision()
+    abstract fun onPlayerCollision(activePhysicsOther: Physics)
+    abstract fun onEnemyCollision(activePhysicsOther: Physics)
     abstract fun onGroundCollision()
-    abstract fun onPlatformCollision()
+    abstract fun onPlatformCollision(platform: Platform)
     abstract fun onNormalAttackCollision(damage: Double)
     abstract fun onRangedAttackCollision(damage: Double)
     abstract fun onSpecialAttackCollision(damage: Double)
@@ -62,45 +63,45 @@ abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXml
     override val manager: StateManager = useStates()
 
     //init states and pass in the functions for onBegin, onExecute and onEnd
-    val idleState = declareState({ beginState_idle() }, { executeState_idle() }, { endState_idle() })
-    val walkState = declareState({ beginState_walk() }, { executeState_walk() }, { endState_walk() })
-    val turnState = declareState({ beginState_turn() }, { executeState_turn() }, { endState_turn() })
-    val jumpState = declareState({ beginState_jump() }, { executeState_jump() }, { endState_jump() })
-    val dieState = declareState({ beginState_die() }, { executeState_die() }, { endState_die() })
-    val normalAttackState = declareState({ beginState_normalAttack() }, { executeState_normalAttack() }, { endState_normalAttack() })
-    val rangedAttackState = declareState({ beginState_rangedAttack() }, { executeState_rangedAttack() }, { endState_rangedAttack() })
-    val specialAttackState = declareState({ beginState_specialAttack() }, { executeState_specialAttack() }, { endState_specialAttack() })
-    val getDamageState = declareState({ beginState_getDamage() }, { executeState_getDamage() }, { endState_getDamage() })
+    val idleState = declareState({ beginState_idle() }, { executeState_idle(it) }, { endState_idle() })
+    val walkState = declareState({ beginState_walk() }, { executeState_walk(it) }, { endState_walk() })
+    val turnState = declareState({ beginState_turn() }, { executeState_turn(it) }, { endState_turn() })
+    val jumpState = declareState({ beginState_jump() }, { executeState_jump(it) }, { endState_jump() })
+    val dieState = declareState({ beginState_die() }, { executeState_die(it) }, { endState_die() })
+    val normalAttackState = declareState({ beginState_normalAttack() }, { executeState_normalAttack(it) }, { endState_normalAttack() })
+    val rangedAttackState = declareState({ beginState_rangedAttack() }, { executeState_rangedAttack(it) }, { endState_rangedAttack() })
+    val specialAttackState = declareState({ beginState_specialAttack() }, { executeState_specialAttack(it) }, { endState_specialAttack() })
+    val getDamageState = declareState({ beginState_getDamage() }, { executeState_getDamage(it) }, { endState_getDamage() })
 
 
     /**
      * All state-functions are listed here. They have to be overridden in subclasses
      */
     abstract fun beginState_idle()
-    abstract fun executeState_idle()
+    abstract fun executeState_idle(dt: Double)
     abstract fun endState_idle()
     abstract fun beginState_walk()
-    abstract fun executeState_walk()
+    abstract fun executeState_walk(dt: Double)
     abstract fun endState_walk()
     abstract fun beginState_turn()
-    abstract fun executeState_turn()
+    abstract fun executeState_turn(dt: Double)
     abstract fun endState_turn()
     abstract fun beginState_jump()
-    abstract fun executeState_jump()
+    abstract fun executeState_jump(dt: Double)
     abstract fun endState_jump()
     abstract fun beginState_die()
-    abstract fun executeState_die()
+    abstract fun executeState_die(dt: Double)
     abstract fun endState_die()
     abstract fun beginState_normalAttack()
-    abstract fun executeState_normalAttack()
+    abstract fun executeState_normalAttack(dt: Double)
     abstract fun endState_normalAttack()
     abstract fun beginState_rangedAttack()
-    abstract fun executeState_rangedAttack()
+    abstract fun executeState_rangedAttack(dt: Double)
     abstract fun endState_rangedAttack()
     abstract fun beginState_specialAttack()
-    abstract fun executeState_specialAttack()
+    abstract fun executeState_specialAttack(dt: Double)
     abstract fun endState_specialAttack()
     abstract fun beginState_getDamage()
-    abstract fun executeState_getDamage()
+    abstract fun executeState_getDamage(dt: Double)
     abstract fun endState_getDamage()
 }
