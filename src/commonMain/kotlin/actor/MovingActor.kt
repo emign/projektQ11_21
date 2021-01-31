@@ -8,6 +8,7 @@ import fsm.StateUser
 import fsm.declareState
 import fsm.useStates
 import kotlinx.coroutines.CoroutineScope
+import physic.AABB
 import physic.Physics
 
 /**
@@ -17,7 +18,7 @@ import physic.Physics
  */
 abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXmlData): Actor(), StateUser {
 
-    var velocity: Point = Point(0.0, -1.0 * actorXmlData.jumpHeight)
+    var velocity: Point = Point(0.0, 0.0)
     var lastVelocity: Point = Point(0.0, 0.0)
     val maxSpeed: Double = actorXmlData.movementSpeed
     val xSpeedStep: Double = 0.2
@@ -50,11 +51,23 @@ abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXml
     /** Disable physics and disable gravity     */
     abstract fun disablePhysics()
 
+    fun resetYPhysics() {
+        velocity.y = 0.0
+        lastVelocity.y = 0.0
+        lastPosition.y = position.y
+    }
+
+    fun resetXPhysics() {
+        velocity.x = 0.0
+        lastVelocity.x = 0.0
+        lastPosition.x = position.x
+    }
+
     //Collision callbacks, triggered by events
-    abstract fun onPlayerCollision(activePhysicsOther: Physics)
-    abstract fun onEnemyCollision(activePhysicsOther: Physics)
+    abstract fun onPlayerCollision(aabbOther: AABB)
+    abstract fun onEnemyCollision(aabbOther: AABB)
     abstract fun onGroundCollision()
-    abstract fun onPlatformCollision(platform: Platform)
+    abstract fun onPlatformCollision(platform: AABB)
     abstract fun onNormalAttackCollision(damage: Double)
     abstract fun onRangedAttackCollision(damage: Double)
     abstract fun onSpecialAttackCollision(damage: Double)

@@ -2,6 +2,7 @@ package eventBus
 
 import actor.actors.Platform
 import fsm.StateExecutor
+import physic.AABB
 import physic.Physics
 
 class JumpEvent()
@@ -11,10 +12,10 @@ class IdleEvent()
 class GroundedEvent()
 
 //Character important events
-class PlayerCollision(val activePhysics: Physics)
-class EnemyCollision(val activePhysics: Physics)
+class PlayerCollision(val aabb: AABB)
+class EnemyCollision(val aabb: AABB)
 class GroundCollision
-class PlatformCollision(val platform: Platform)
+class PlatformCollision(val aabb: AABB)
 class NormalAttackCollision(val damage: Double)
 class RangedAttackCollision(val damage: Double)
 class SpecialAttackCollision(val damage: Double)
