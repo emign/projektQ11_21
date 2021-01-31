@@ -9,30 +9,22 @@ class Listener(val rectangles: List<AABB>) {
     class Pair(val r1: AABB, val r2: AABB)
 
     var xEndPoints: MutableList<EndPoint> = mutableListOf()
-    var yEndPoints: MutableList<EndPoint> = mutableListOf()
-    var collisions: MutableList<Pair> = mutableListOf()
 
-    init {
-        for (i in rectangles.indices) {
-            xEndPoints.add(2 * i, EndPoint(PointType.BEGIN, rectangles[i].left, i))
-            yEndPoints.add(2 * i, EndPoint(PointType.BEGIN, rectangles[i].top, i))
-
-            xEndPoints.add(2 * i + 1, EndPoint(PointType.END, rectangles[i].right, i))
-            yEndPoints.add(2 * i + 1, EndPoint(PointType.END, rectangles[i].bottom, i))
-        }
-        xEndPoints.sortBy { it.value }
-        yEndPoints.sortBy { it.value }
-    }
 
     fun update(): MutableList<Pair> {
-        collisions = mutableListOf()
-        updateX()
-        return updateY()
+        xEndPoints = mutableListOf()
+        for (i in rectangles.indices) {
+            xEndPoints.add(2 * i, EndPoint(PointType.BEGIN, rectangles[i].left, i))
+            xEndPoints.add(2 * i + 1, EndPoint(PointType.END, rectangles[i].right, i))
+        }
+        xEndPoints = insertionSort(xEndPoints)
+        return updateY(updateX())
     }
 
-    fun updateX() {
+    fun updateX(): MutableList<Pair> {
         xEndPoints = insertionSort(xEndPoints)
         val activeList = mutableListOf<EndPoint>()
+        val collisions = mutableListOf<Pair>()
         for (i in 0 until xEndPoints.size - 1) {
             if (xEndPoints[i].type == PointType.BEGIN) {
                 activeList.add(xEndPoints[i])
@@ -46,12 +38,12 @@ class Listener(val rectangles: List<AABB>) {
                 }
             }
         }
+        return collisions
     }
 
-    fun updateY(): MutableList<Pair> {
-        yEndPoints = insertionSort(yEndPoints)
+    fun updateY(collidables: MutableList<Pair>): MutableList<Pair> {
         val new = mutableListOf<Pair>()
-        collisions.forEach { pair ->
+        collidables.forEach { pair ->
             if (pair.r1.top > pair.r2.bottom || pair.r2.top > pair.r1.bottom) {
                 //collisions.remove(pair)
             } else {
@@ -61,14 +53,14 @@ class Listener(val rectangles: List<AABB>) {
         return new
     }
 
-    fun insertionSort(items:MutableList<EndPoint>): MutableList<EndPoint>{
-        if (items.isEmpty() || items.size<2){
+    fun insertionSort(items: MutableList<EndPoint>): MutableList<EndPoint> {
+        if (items.isEmpty() || items.size < 2) {
             return items
         }
-        for (count in 1 until items.size){
+        for (count in 1 until items.size) {
             val item = items[count]
             var i = count
-            while (i>0 && item.value < items[i - 1].value){
+            while (i > 0 && item.value < items[i - 1].value) {
                 items[i] = items[i - 1]
                 i -= 1
             }
