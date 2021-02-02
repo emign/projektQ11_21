@@ -1,14 +1,18 @@
 package actor.actors
 
 import actor.Actor
+import physic.Physics
 
 class Platform: Actor() {
+
+    //override val physics: Physics = Physics(this)
+
     override fun onCreate() {
-        TODO("Not yet implemented")
+        initPhysics()
     }
 
     override fun onExecute(dt: Double) {
-        TODO("Not yet implemented")
+        //physics.update(dt)
     }
 
     override fun onDelete() {

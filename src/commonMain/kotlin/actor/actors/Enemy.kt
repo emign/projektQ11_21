@@ -1,6 +1,5 @@
 package actor
 
-import actor.actors.Platform
 import com.soywiz.korge.box2d.*
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
@@ -13,7 +12,7 @@ import eventBus.*
 import fsm.*
 import kotlinx.coroutines.CoroutineScope
 import org.jbox2d.dynamics.*
-import physic.AABB
+import physic.Direction
 import physic.Physics
 
 
@@ -24,7 +23,7 @@ import physic.Physics
  * @property scope The [CoroutineScope] which is used for setting up and triggering events
  */
 class Enemy(
-    val model: KorgeDbArmatureDisplay,
+    override val model: KorgeDbArmatureDisplay,
     xmlData: ActorXmlData,
     scope: CoroutineScope
 ) : MovingActor(scope, xmlData) {
@@ -51,7 +50,7 @@ class Enemy(
         }
     }
 
-    override val physics: Physics = Physics(this, this.gravity)
+   // override val physics: Physics = Physics(this, Physics.PhysicsInfo(position.x, position.x + width, position.y, position.y + height, position, velocity, gravity))
 
 
     init {
@@ -71,7 +70,7 @@ class Enemy(
         setStartState(idleState)
 
         //register physics -> TODO
-        //addComponent(activePhysics)
+        initPhysics()
 
         //register events
         initEvents()
@@ -82,6 +81,7 @@ class Enemy(
     /** executed every frame        */
     override fun onExecute(dt: Double) {
         updateCurrentState(dt)
+        //physics.update(dt)
         updateGraphics()
     }
 
@@ -96,7 +96,7 @@ class Enemy(
         this.xy(this.position.x, this.position.y)
         this.scale = this.newScale
 
-        this.model.xy(this.x, this.y)   //Maybe move the animation a bit, we will see...
+        this.model.xy(0, 0)   //Maybe move the animation a bit, we will see...
     }
 
 
@@ -131,47 +131,76 @@ class Enemy(
 
     /** checked every frame in specific states, main collision method       */
     fun calculateCollisions() {
-        //check for collisions with specific types
-        //activePhysics.isPlayerCollision()
-        //activePhysics.isSpriteCollision()
-        //apply events
-        //TODO
+        //handleSpeed and virtual update positions
+        //calculate collisions wit other moving objects, ground and platforms
+        //determine the type on which we collide
+        //call callbacks
     }
 
 
     //collision callbacks
-    override fun onPlayerCollision(aabbOther: AABB) {
-        //physics.calculate Collision and direction of collision
-        //maybe change state or something...
-        println("Ich Enemy kollidiere mit einem Player")
+    override fun onPlayerCollision(physicsOther: Physics) {
+        var hitType: Direction = Direction.NONE
+        val whatState = getCurrentState()
+        if (whatState == dieState) {
+            //do nothing
+        } else {
+            //hitType = usedForDeterminingTypeOfPlayerCollision(physics, physicsOther)
+        }
+
+        when(hitType) {
+            Direction.DOWN -> {
+                velocity.y = 0.1
+            }
+            Direction.UP -> {
+                velocity.y = -0.1
+            }
+            Direction.RIGHT -> {
+                velocity.x = 0.1
+            }
+            Direction.LEFT -> {
+                velocity.x = -0.1
+            }
+            else -> {
+
+            }
+        }
+
     }
 
-    override fun onEnemyCollision(aabbOther: AABB) {
-        //do nothing for now -> collision with other AI objects
-        println("Ich Enemy kollidiere mit einem Enemy")
-
+    override fun onEnemyCollision(physicsOther: Physics) {
+        onPlayerCollision(physicsOther)
     }
 
     override fun onGroundCollision() {
-        TODO("Not yet implemented")
+        velocity.y = -0.1
     }
 
-    override fun onPlatformCollision(platform: AABB) {
-        TODO("Not yet implemented")
+    override fun onPlatformCollision(platform: Physics) {
+        //val hitType: Direction = usedForDeterminingTypeOfPlayerCollision(physics, platform)
+        /*if (hitType == Direction.UP) {
+            onGroundCollision()
+        }*/
     }
 
     override fun onNormalAttackCollision(damage: Double) {
-        //change state to damage, play sound, ...
+        if (getDamageCooldown <= 0) {
+            getDamageCooldown = 120
+            healthpoints -= damage
+            if (healthpoints <= 0) {
+                doStateChange(dieState)
+            } else {
+                doStateChange(getDamageState)
+            }
+        }
     }
 
     override fun onRangedAttackCollision(damage: Double) {
-        //change state to damage, play sound, ...
-        println("Ich Enemy kollidiere mit einem Bullet")
-
+        onNormalAttackCollision(damage)
     }
 
     override fun onSpecialAttackCollision(damage: Double) {
-        //change state to damage, play sound, ...
+        onNormalAttackCollision(damage)
     }
 
 
@@ -207,7 +236,7 @@ class Enemy(
         //println("Ich bin dabei zu laufen")
         timer += 1
         calculateCollisions()
-        physics.update(dt, maxSpeed, xSpeedStep, true)
+        //physics.update(dt, maxSpeed, xSpeedStep, true)
     }
 
     override fun endState_walk() {

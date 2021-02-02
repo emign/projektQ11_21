@@ -2,7 +2,6 @@ package actor.actors
 
 import actor.ActorXmlData
 import actor.MovingActor
-import actor.Player
 import actor.readCharacterXmlData
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
@@ -10,12 +9,11 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import kotlinx.coroutines.CoroutineScope
-import physic.AABB
 import physic.Physics
 
-class Bullet(val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlData: ActorXmlData): MovingActor(scope, actorXmlData) {
-    override val physics: Physics
-        get() = TODO("Not yet implemented")
+class Bullet(override val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlData: ActorXmlData): MovingActor(scope, actorXmlData) {
+    /*override val physics: Physics
+        get() = TODO("Not yet implemented")*/
 
     init {
         onCreate()
@@ -51,11 +49,11 @@ class Bullet(val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlD
         TODO("Not yet implemented")
     }
 
-    override fun onPlayerCollision(aabbOther: AABB) {
+    override fun onPlayerCollision(aabbOther: Physics) {
         TODO("Not yet implemented")
     }
 
-    override fun onEnemyCollision(aabbOther: AABB) {
+    override fun onEnemyCollision(aabbOther: Physics) {
         TODO("Not yet implemented")
     }
 
@@ -63,7 +61,7 @@ class Bullet(val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlD
         TODO("Not yet implemented")
     }
 
-    override fun onPlatformCollision(platform: AABB) {
+    override fun onPlatformCollision(platform: Physics) {
         TODO("Not yet implemented")
     }
 
@@ -193,7 +191,7 @@ class Bullet(val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlD
     }
 
     override fun onExecute(dt: Double) {
-        TODO("Not yet implemented")
+        //physics.update(dt)
     }
 
     override fun onDelete() {

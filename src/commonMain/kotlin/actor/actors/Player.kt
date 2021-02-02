@@ -1,6 +1,5 @@
 package actor
 
-import actor.actors.Platform
 import com.soywiz.korge.box2d.*
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
@@ -13,7 +12,6 @@ import eventBus.*
 import fsm.*
 import kotlinx.coroutines.CoroutineScope
 import org.jbox2d.dynamics.*
-import physic.AABB
 import physic.Physics
 
 
@@ -24,7 +22,7 @@ import physic.Physics
  * @property scope The [CoroutineScope] which is used for setting up and triggering events
  */
 class Player(
-    val model: KorgeDbArmatureDisplay,
+    override val model: KorgeDbArmatureDisplay,
     xmlData: ActorXmlData,
     scope: CoroutineScope
 ) : MovingActor(scope, xmlData) {
@@ -51,7 +49,7 @@ class Player(
         }
     }
 
-    override val physics: Physics = Physics(this, this.gravity)
+    //override val physics: Physics = Physics(this, this.gravity)
 
 
     init {
@@ -71,7 +69,7 @@ class Player(
         setStartState(idleState)
 
         //register physics -> TODO
-        //addComponent(activePhysics)
+        initPhysics()
 
         //register events
         initEvents()
@@ -82,6 +80,7 @@ class Player(
     /** executed every frame        */
     override fun onExecute(dt: Double) {
         updateCurrentState(dt)
+        //physics.update(dt)
         updateGraphics()
     }
 
@@ -96,7 +95,7 @@ class Player(
         this.xy(this.position.x, this.position.y)
         this.scale = this.newScale
 
-        this.model.xy(this.x, this.y)   //Maybe move the animation a bit, we will see...
+        //this.model.xy(0, 0)   //Maybe move the animation a bit, we will see...
     }
 
 
@@ -140,13 +139,13 @@ class Player(
 
 
     //collision callbacks
-    override fun onPlayerCollision(aabbOther: AABB) {
+    override fun onPlayerCollision(aabbOther: Physics) {
         //physics.calculate Collision and direction of collision
         //maybe change state or something...
         println("Ich Player kollidiere mit einem Player")
     }
 
-    override fun onEnemyCollision(aabbOther: AABB) {
+    override fun onEnemyCollision(aabbOther: Physics) {
         println("Ich Player kollidiere mit einem Enemy")
         //do nothing for now -> collision with other AI objects
     }
@@ -155,7 +154,7 @@ class Player(
         TODO("Not yet implemented")
     }
 
-    override fun onPlatformCollision(platform: AABB) {
+    override fun onPlatformCollision(platform: Physics) {
         TODO("Not yet implemented")
     }
 

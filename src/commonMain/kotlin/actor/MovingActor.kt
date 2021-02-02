@@ -1,6 +1,6 @@
 package actor
 
-import actor.actors.Platform
+import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korma.geom.Point
 import eventBus.EventBus
 import fsm.StateManager
@@ -8,7 +8,6 @@ import fsm.StateUser
 import fsm.declareState
 import fsm.useStates
 import kotlinx.coroutines.CoroutineScope
-import physic.AABB
 import physic.Physics
 
 /**
@@ -18,8 +17,6 @@ import physic.Physics
  */
 abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXmlData): Actor(), StateUser {
 
-    var velocity: Point = Point(0.0, 0.0)
-    var lastVelocity: Point = Point(0.0, 0.0)
     val maxSpeed: Double = actorXmlData.movementSpeed
     val xSpeedStep: Double = 0.2
     val gravity: Double = 0.15
@@ -29,17 +26,19 @@ abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXml
     val skeletonJsonFile: String = actorXmlData.skeletonJsonFile
     val textureJsonFile: String = actorXmlData.textureJsonFile
     val imageFile: String = actorXmlData.imageFile
-    val healthpoints: Double = actorXmlData.healthpoints
+    var healthpoints: Double = actorXmlData.healthpoints
     var direction: Int = actorXmlData.direction
     val normalAttack: Attack = actorXmlData.normalAttack
     val rangedAttack: Attack = actorXmlData.rangedAttack
     val specialAttack: Attack = actorXmlData.specialAttack
 
+    var getDamageCooldown: Int = 120
+
     val bus: EventBus = EventBus(scope)
 
     var baseLine: Double = this.y + this.height
 
-    abstract val physics: Physics
+    abstract val model: KorgeDbArmatureDisplay
 
     /**
      * Initialize all events which are used in this [MovingActor]
@@ -63,11 +62,15 @@ abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXml
         lastPosition.x = position.x
     }
 
+    fun setAnimation(name: String, times: Int, ) {
+        model.animation.play(name, times)
+    }
+
     //Collision callbacks, triggered by events
-    abstract fun onPlayerCollision(aabbOther: AABB)
-    abstract fun onEnemyCollision(aabbOther: AABB)
+    abstract fun onPlayerCollision(physicsOther: Physics)
+    abstract fun onEnemyCollision(physicsOther: Physics)
     abstract fun onGroundCollision()
-    abstract fun onPlatformCollision(platform: AABB)
+    abstract fun onPlatformCollision(platform: Physics)
     abstract fun onNormalAttackCollision(damage: Double)
     abstract fun onRangedAttackCollision(damage: Double)
     abstract fun onSpecialAttackCollision(damage: Double)
