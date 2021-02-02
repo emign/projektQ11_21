@@ -38,11 +38,11 @@ class Listener(val gravityAcc: Vec2) {
     fun update(dt: Float) {
         val possCollisions = updateX()
         forceRegistry.updateForces(dt)
-        applyPhysics(dt, possCollisions)
+        applyPhysics(dt, 120f, 120f)
     }
 
-    fun applyPhysics(dt: Float, pairs: MutableList<Pair>) {
-        val ms = dt/1000.0f
+    fun applyPhysics(dt: Float, xCoeff: Float, yCoeff: Float) {
+        val ms = dt / 1000.0f
         activeObjects.fastForEach { activePhysics ->
             if (activePhysics.isKinematic) {
                 //activePhysics.lastVelocity = activePhysics.velocity
@@ -50,30 +50,25 @@ class Listener(val gravityAcc: Vec2) {
 
                 activePhysics.velocity += activePhysics.force * ms
 
-                activePhysics.position.x += (activePhysics.velocity.x * ms * activePhysics.xCoefficient).toFloat()
-                activePhysics.position.y += (activePhysics.velocity.y * ms * activePhysics.yCoefficient).toFloat()
+                activePhysics.isGrounded = false
+                activeObjects.filter { it != activePhysics }.forEach {
+                    activePhysics.onCollisionWithStaticView(it, ms, xCoeff, yCoeff)
+                }
 
                 //activePhysics.owner.lastPosition = Point(activePhysics.lastPosition.x, activePhysics.lastPosition.y)
                 //activePhysics.owner.velocity = Point(activePhysics.velocity.x, activePhysics.velocity.y)
                 //activePhysics.owner.lastVelocity = Point(activePhysics.lastVelocity.x, activePhysics.lastVelocity.y)
+                activePhysics.aabb.x = activePhysics.position.x
+                activePhysics.aabb.y = activePhysics.position.y
+                /* TODO */activePhysics.owner.x = activePhysics.position.x.toDouble()
+                activePhysics.owner.y = activePhysics.position.y.toDouble()
                 activePhysics.force = Vec2(0.0f, 0.0f)
             }
-        }
-        pairs.fastForEach { pair ->
-            pair.r1.isGrounded = false
-            pair.r1.onCollisionWithStaticView(pair.r2)
-        }
-
-        activeObjects.fastForEach { activePhysics ->
-            activePhysics.aabb.x = activePhysics.position.x
-            activePhysics.aabb.y = activePhysics.position.y
-            /* TODO */activePhysics.owner.x = activePhysics.position.x.toDouble()
-            activePhysics.owner.y = activePhysics.position.y.toDouble()
         }
         forceRegistry.zeroForces()
     }
 
-   fun updateX(): MutableList<Pair> {
+    fun updateX(): MutableList<Pair> {
         xEndPoints = mutableListOf()
         for (i in activeObjects.indices) {
             xEndPoints.add(2 * i, EndPoint(PointType.BEGIN, activeObjects[i].aabb.x.toDouble(), i))
@@ -92,7 +87,12 @@ class Listener(val gravityAcc: Vec2) {
                 activeList.add(xEndPoints[i])
             } else {
                 if (xEndPoints[i + 1].value - xEndPoints[i].value < THRESHOLD) {
-                    collisions.add(Pair(activeObjects[xEndPoints[i].aabbIndex], activeObjects[xEndPoints[i + 1].aabbIndex]))
+                    collisions.add(
+                        Pair(
+                            activeObjects[xEndPoints[i].aabbIndex],
+                            activeObjects[xEndPoints[i + 1].aabbIndex]
+                        )
+                    )
                 }
                 activeList.remove(activeList.filter { it.aabbIndex == xEndPoints[i].aabbIndex }[0])
                 activeList.forEach {
