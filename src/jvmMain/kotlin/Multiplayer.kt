@@ -1,5 +1,3 @@
-package multiplayer
-
 import com.soywiz.korio.async.*
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
@@ -15,7 +13,7 @@ class MultiplayerServer(private val port : Int,private val clientCount : Int) {
     var sockets : MutableList<Socket> = emptyList<Socket>().toMutableList()
 
     init {
-        val builder = aSocket(SelectorManager(Dispatchers.Default))
+        val builder = aSocket(ActorSelectorManager (Dispatchers.Default))
 
         server = builder.tcp().bind(hostname = "127.0.0.1",port = port)
         println("Started echo telnet server at ${server.localAddress}")

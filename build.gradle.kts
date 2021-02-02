@@ -39,10 +39,10 @@ korge {
 // To selectively enable targets
 	
 	targetJvm()
-	targetJs()
-	targetDesktop()
-	targetIos()
-	targetAndroidIndirect() // targetAndroidDirect()
+	//targetJs()
+	//targetDesktop()
+	//targetIos()
+	//targetAndroidIndirect() // targetAndroidDirect()
 }
 
 kotlin {
@@ -57,8 +57,11 @@ kotlin {
 			dependencies{
 				implementation("io.ktor:ktor-client-core:$ktor_version")
 				implementation("io.ktor:ktor-network:$ktor_version")
+
 			}
 		}
+
+
 
 	}
 }
