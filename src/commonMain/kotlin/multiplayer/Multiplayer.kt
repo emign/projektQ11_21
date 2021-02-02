@@ -1,6 +1,6 @@
-package multiplayer
+/*package multiplayer
 
-import com.soywiz.korio.async.*
+/*import com.soywiz.korio.async.*
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.util.*
@@ -65,4 +65,4 @@ class MultiplayerClient(private val ip : String, port: Int) {
         }
     }
 
-}
+}*/

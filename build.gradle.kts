@@ -57,8 +57,8 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-core:$ktor_version")
-                implementation("io.ktor:ktor-network:$ktor_version")
+                //implementation("io.ktor:ktor-client-core:$ktor_version")
+                //implementation("io.ktor:ktor-network:$ktor_version")
             }
         }
 
