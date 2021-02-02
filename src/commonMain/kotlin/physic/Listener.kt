@@ -56,6 +56,7 @@ class Listener(val gravityAcc: Vec2) {
                 activePhysics.isGrounded = false
 
                 activeObjects.filter { it != activePhysics }.fastForEach {
+                    println(it.owner.name)
                     solveCollision(activePhysics, it)
                 }
 
@@ -99,6 +100,7 @@ class Listener(val gravityAcc: Vec2) {
                 }
             }
             r1.callback(r1, r2)
+            r2.callback(r2, r1)
         }
     }
 

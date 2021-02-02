@@ -22,7 +22,7 @@ class Physics(
         var kinematic: Boolean,
         val xCoefficient: Double,
         val yCoefficient: Double,
-        val callback: (Physics, Physics) -> Unit
+        val callback: Physics.(Physics) -> Unit
     )
 
     var position = info.position

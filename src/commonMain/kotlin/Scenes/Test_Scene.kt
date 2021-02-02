@@ -42,35 +42,35 @@ class TestScene : Scene() {
             s1, listener, Physics.PhysicsInfo(
                 s1.width, s1.height, Vec2(s1.x.toFloat(), s1.y.toFloat()), Vec2(0.0f, 0.0f),
                 Vec2(2.0f, 0.5f), true, 120.0, 120.0
-            ) { me, other -> println("Ich heisse ${me.owner.name} und kollidiere mit ${other.owner.name}") }
+            ) { other -> println("Ich heisse ${this.owner.name} und kollidiere mit ${other.owner.name}") }
         )
 
         val p2 = Physics(
             s2, listener, Physics.PhysicsInfo(
                 s2.width, s2.height, Vec2(s2.x.toFloat(), s2.y.toFloat()), Vec2(0.0f, 0.0f),
                 Vec2(2.0f, 0.5f), false, 0.01, 0.01
-            ) { _, _ -> }
+            ) { _ -> }
         )
 
         val p3 = Physics(
             s3, listener, Physics.PhysicsInfo(
                 s3.width, s3.height, Vec2(s3.x.toFloat(), s3.y.toFloat()), Vec2(0.0f, 0.0f),
                 Vec2(2.0f, 0.5f), false, 0.01, 0.01
-            ) { _, _ -> }
+            ) { _ -> }
         )
 
         val p4 = Physics(
             s4, listener, Physics.PhysicsInfo(
                 s4.width, s4.height, Vec2(s4.x.toFloat(), s4.y.toFloat()), Vec2(0.0f, 0.0f),
                 Vec2(2.0f, 0.5f), false, 0.01, 0.01
-            ) { _, _ -> }
+            ) { _ -> }
         )
 
         val p5 = Physics(
             s5, listener, Physics.PhysicsInfo(
                 s5.width, s5.height, Vec2(s5.x.toFloat(), s5.y.toFloat()), Vec2(0.0f, 0.0f),
                 Vec2(2.0f, 0.5f), true, 120.0, 120.0
-            ) { me, other -> println("Ich heisse ${me.owner.name} und kollidiere mit ${other.owner.name}. Aber ich bin der Zweite") }
+            ) { other -> println("Ich heisse ${this.owner.name} und kollidiere mit ${other.owner.name}. Aber ich bin der Zweite") }
         )
 
         addChild(s1)
