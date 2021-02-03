@@ -1,81 +1,78 @@
 package physic
 
+import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.SolidRect
+import com.soywiz.korma.geom.Rectangle
 import org.jbox2d.collision.AABB
 import org.jbox2d.common.MathUtils
 import org.jbox2d.common.Vec2
 import kotlin.math.abs
 import kotlin.math.tan
+import physic.force.ForceRegistry
+import physic.force.Damping
+
+/**
+ * Rigidbody-class. A [Physics]-object can be moved by the [Listener], can be updated with forces by the [ForceRegistry]
+ * and reacts to collision with other physics-objects. Add this to a [Listener] with [Listener.addPhysics]
+ * @property owner the owner of a physics Object. A physics object is invisible, but can be attached to a [SolidRect], so the owner takes its position from the physics object
+ * @property friction the coefficient of friction. This basically tells the [Damping]-force how to slow the object down. The higher the coefficient is, the faster it will be slowed down. Has a x- and y-Value
+ * @property isDynamic just a boolean value for checking whether the object should move or not. This is like Box2D's static and dynamic
+ * @property coefficient this is used internal for calculating pixels from meters. The higher this is, the faster the object will move, but collision detection becomes more inaccurate.
+ * @property callback a custom callback-function which is executed every time a collision occurs. It takes another [Physics]-object as a parameter: The object on this object collides with
+ */
 
 class Physics(
     val owner: SolidRect,
-    val listener: Listener,
-    info: PhysicsInfo
+    var friction: Vec2,
+    var isDynamic: Boolean,
+    val coefficient: Vec2 = Vec2(120f, 120f),
+    val callback: Physics.(Physics) -> Unit
 ) {
 
-    class PhysicsInfo(
-        val width: Double,
-        val height: Double,
-        var position: Vec2,
-        var velocity: Vec2,
-        var friction: Vec2,
-        var kinematic: Boolean,
-        val xCoefficient: Double,
-        val yCoefficient: Double,
-        val callback: Physics.(Physics) -> Unit
-    )
-
-    var position = info.position
+    var position = Vec2(owner.pos.x.toFloat(), owner.pos.y.toFloat())
     var lastPosition = position
-    var velocity = info.velocity
+    var velocity: Vec2 = Vec2()
     var lastVelocity = velocity
-    var frictionX = info.friction.x
-    var frictionY = info.friction.y
-    var width: Double = info.width
-    var height: Double = info.height
-
-    val callback = info.callback
 
     val x: Float get() = position.x
     val y: Float get() = position.y
+    val width = owner.width
+    val height = owner.height
 
+    /**
+     * Sum of all forces acting on this object at the moment. Is cleared and re-calculated every frame
+     */
     var force: Vec2 = Vec2(0.0f, 0.0f)
-    val xCoefficient: Float = info.xCoefficient.toFloat()
-    val yCoefficient: Float = info.yCoefficient.toFloat()
 
-    var isGrounded: Boolean = false
-    var isKinematic = info.kinematic
-
-    class Rect(val x: Float, val y: Float, val width: Float, val height: Float) {
-        fun closestPointOnBoundsToPoint(point: Vec2): Vec2 {
-            var minDist = abs(point.x - this.x)
-            var boundsPoint = Vec2(-minDist, 0.0f)
-            if (abs(this.x + this.width - point.x) < minDist) {
-                minDist = abs(this.x + this.width - point.x).toFloat()
-                boundsPoint = Vec2(minDist, 0.0f)
-            }
-            if (abs(this.y + this.height - point.y) < minDist) {
-                minDist = abs(this.y + this.height - point.y).toFloat()
-                boundsPoint = Vec2(0.0f, minDist)
-            }
-            if (abs(this.y - point.y) < minDist) {
-                minDist = abs(this.y - point.y)
-                boundsPoint = Vec2(0.0f, -minDist)
-            }
-            return boundsPoint
-        }
+    /**
+     * Adds a force to the [force] variable of this object
+     */
+    fun addForce(newForce: Vec2) {
+        this.force = this.force + newForce
     }
 
+    /**
+     * is the [Physics]-object on the ground? If yes, then we are allowed to jump! ;)
+     */
+    var isGrounded: Boolean = false
 
-    fun minkowskiDifference(other: Physics): Rect {
+
+    /**
+     * calculates the minkowski difference of this Physics object and another one. This is used for collision detection.
+     * The concept of Minkowski Difference is basically to subtract every point from a [Rectangle] from every point of another
+     * [Rectangle]. All those calculated points together combined creates a new [Rectangle]. If the original rectangles intersect, it means
+     * that they have one or more points in common. But because of subtracting every point from every point, the overlapping points
+     * cancel out to zero. So we just have to check if the origin (0, 0) is located inside of the resulting minkowski-rectangle, and we now
+     * that the two original physics objects are colliding. If this happens, we can just calculate the [closestPointOnBoundsToPoint]-method
+     * and take the minkowski-rectangle and the origin(0, 0) as paramter. This tells us from which direction the original [Physics]-objects
+     * collided and is super useful for collision resolution
+     * See [Listener.solveCollision] for the solving part
+     * */
+    fun minkowskiDifference(other: Physics): Rectangle {
         val x = this.position.x - (other.position.x + other.width)
         val y = this.position.y - (other.position.y + other.height)
         val width = this.width + other.width
         val height = this.height + other.height
-        return Rect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
-    }
-
-    fun addForce(newForce: Vec2) {
-        this.force = this.force + newForce
+        return Rectangle(x = x.toFloat(), y = y.toFloat(), width = width.toFloat(), height = height.toFloat())
     }
 }
