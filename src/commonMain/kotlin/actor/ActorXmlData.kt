@@ -16,7 +16,6 @@ data class ActorXmlData(
     val healthpoints: Double,
     val movementSpeed: Double,
     val jumpHeight: Double,
-    var direction: Int,
     val normalAttack: Attack,
     val rangedAttack: Attack,
     val specialAttack: Attack
@@ -70,7 +69,6 @@ suspend fun VfsFile.readCharacterXmlData(): ActorXmlData {
     val healthpoints = xml.attribute("healthpoints")?.toDouble() ?: 0.0
     val movementSpeed = xml.attribute("movementSpeed")?.toDouble() ?: 0.0
     val jumpHeight = xml.attribute("jumpHeight")?.toDouble() ?: 0.0
-    val direction = xml.attribute("direction")?.toInt() ?: 0
 
     //read all attacks
     val attacksFile = xml.children("attack")
@@ -101,7 +99,6 @@ suspend fun VfsFile.readCharacterXmlData(): ActorXmlData {
         healthpoints,
         movementSpeed,
         jumpHeight,
-        direction,
         standardAttack,
         rangedAttack,
         specialAttack

@@ -8,6 +8,7 @@ import fsm.StateUser
 import fsm.declareState
 import fsm.useStates
 import kotlinx.coroutines.CoroutineScope
+import physic.Direction
 import physic.Physics
 
 /**
@@ -27,7 +28,7 @@ abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXml
     val textureJsonFile: String = actorXmlData.textureJsonFile
     val imageFile: String = actorXmlData.imageFile
     var healthpoints: Double = actorXmlData.healthpoints
-    var direction: Int = actorXmlData.direction
+    var direction: Int = 1
     val normalAttack: Attack = actorXmlData.normalAttack
     val rangedAttack: Attack = actorXmlData.rangedAttack
     val specialAttack: Attack = actorXmlData.specialAttack

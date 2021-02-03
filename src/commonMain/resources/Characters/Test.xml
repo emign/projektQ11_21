@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<player name="Demon" DbName="armatureName" skeletonJsonFile="Demon_ske.json" textureJsonFile="Demon_tex.json" imageFile="Demon_tex.png" healthpoints="100.0" movementSpeed="5.0" jumpHeight="15.0" direction="1">
-    <attack name="standard" damage="3" blockable="true" cooldown="5.0" isready="true">
-    </attack>
-    <attack name="special" damage="10" blockable="false" cooldown="20.0" isready="false">
-    </attack>
-    <attack name="ranged" damage="5" blockable="false" cooldown="15.0" isready="true">
-    </attack>
-</player>
