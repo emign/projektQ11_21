@@ -3,6 +3,7 @@ package multiplayer
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.cio.websocket.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -23,23 +24,21 @@ actual class Server actual constructor(private val ip:String, private val port:I
         embeddedServer(CIO,port,ip){
             install(WebSockets) {
             }
-            install(DefaultHeaders)
+            //install(DefaultHeaders)
             install(CallLogging)
             routing {
-                webSocket ("/") {
+                trace { println(it.buildText()) }
+                webSocket ("/ws") {
                     out=outgoing
-                    try {
-                        incoming.consumeEach { frame ->
-                            when (frame){
-                                is Frame.Text->callback(frame.readText())
-                            }
+                    for (frame in incoming){
+                        when (frame){
+                            is Frame.Text->callback(frame.readText())
+                            else -> {}
                         }
-                    }finally {
-                        
                     }
                 }
             }
-        }
+        }.start(false)
     }
 
     actual override fun setGet(callback: (String) -> Unit) {

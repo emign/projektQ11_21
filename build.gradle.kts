@@ -2,6 +2,7 @@ import com.soywiz.korge.gradle.*
 import org.jetbrains.kotlin.ir.backend.js.*
 
 val ktor_version : String by project
+val logback_version : String by project
 
 buildscript {
 	val korgePluginVersion: String by project
@@ -62,6 +63,7 @@ kotlin {
 				implementation("io.ktor:ktor-client-core:$ktor_version")
 				implementation("io.ktor:ktor-server-core:$ktor_version")
 				implementation("io.ktor:ktor-websockets:$ktor_version")
+				implementation("ch.qos.logback:logback-classic:$logback_version")
 
 			}
 
