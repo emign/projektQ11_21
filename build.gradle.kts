@@ -1,4 +1,5 @@
 import com.soywiz.korge.gradle.*
+import org.jetbrains.kotlin.ir.backend.js.*
 
 val ktor_version : String by project
 
@@ -54,13 +55,15 @@ kotlin {
 
 
 		val commonMain by getting {
+			repositories{
+				jcenter()
+			}
 			dependencies{
 				implementation("io.ktor:ktor-client-core:$ktor_version")
 				implementation("io.ktor:ktor-server-core:$ktor_version")
 				implementation("io.ktor:ktor-websockets:$ktor_version")
 
 			}
-		}
 
 		val jvmMain by getting{
 			dependencies{
@@ -69,5 +72,6 @@ kotlin {
 			}
 		}
 
+		}
 	}
 }

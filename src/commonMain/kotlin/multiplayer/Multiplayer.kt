@@ -1,20 +1,28 @@
 package multiplayer
 
-import eventBus.EventBus
-import kotlin.properties.Delegates
+import kotlinx.coroutines.*
 
-//Object for connecting the Modules
-object Multiplayer {
-    lateinit var bus : EventBus
-    var port : Int = 0
-    var host : String = ""
 
-    var initalized = false
+class Multiplayer(private val ip : String, private val port : Int, private val server : Boolean=false,private val scope: CoroutineScope) {
 
-    fun init(eventBus : EventBus,inport:Int,inhost:String){
-        bus=eventBus
-        port=inport
-        host=inhost
-        initalized=true
+    private var clientServer : ClientServer = if (server) {
+        Server(ip,port,scope)
+    }else{
+        Client(ip,port,scope)
     }
+
+    init {
+        clientServer.create()
+    }
+
+    //send Data to the other Side
+    fun send(data: MultiplayerData){
+        clientServer.send(data)
+    }
+
+    //Set a Callback for receiving the values
+    fun setCallback(callback:(String)->(Unit)){
+        clientServer.setGet(callback)
+    }
+
 }

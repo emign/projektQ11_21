@@ -9,6 +9,7 @@ import com.soywiz.korio.file.std.*
 import eventBus.*
 import eventBus.Input
 import fsm.*
+import multiplayer.*
 
 class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
