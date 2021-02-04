@@ -1,14 +1,15 @@
 package actor.actors
 
 import actor.Actor
+import com.soywiz.korge.view.Container
 import physic.Physics
 
-class Platform: Actor() {
+class Platform(parent: Container): Actor(parent) {
 
     //override val physics: Physics = Physics(this)
 
     override fun onCreate() {
-        initPhysics()
+        initPhysics(false)
     }
 
     override fun onExecute(dt: Double) {

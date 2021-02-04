@@ -3,6 +3,7 @@ package actor
 import com.soywiz.korge.box2d.*
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
+import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korge.view.xy
 import com.soywiz.korim.format.readBitmap
@@ -22,17 +23,18 @@ import physic.Physics
  * @property scope The [CoroutineScope] which is used for setting up and triggering events
  */
 class Player(
+    parent: Container,
     override val model: KorgeDbArmatureDisplay,
     xmlData: ActorXmlData,
     scope: CoroutineScope
-) : MovingActor(scope, xmlData) {
+) : MovingActor(parent, scope, xmlData) {
     /**
      * create a new object of this class -> Better than direct initialization via constructor, here you can use the xmlReader
      * @param xmlFile the String-file of the character-xml. The xml has to be in the right format for reading characters
      * @param scope The current scope where this actor is loaded on. Used for the [EventBus]
      */
     companion object {
-        suspend fun build(xmlFile: String, scope: CoroutineScope): Player {
+        suspend fun build(xmlFile: String, scope: CoroutineScope, parent: Container): Player {
             val characterXmlData = resourcesVfs[xmlFile].readCharacterXmlData()
 
             val ske = resourcesVfs[characterXmlData.skeletonJsonFile].readString()
@@ -45,7 +47,7 @@ class Player(
             val atlas = factory.parseTextureAtlasData(Json.parse(tex)!!, img)
 
             val model = factory.buildArmatureDisplay(characterXmlData.dbName)!!
-            return Player(model, characterXmlData, scope)
+            return Player(parent, model, characterXmlData, scope)
         }
     }
 
@@ -69,7 +71,9 @@ class Player(
         setStartState(idleState)
 
         //register physics -> TODO
-        initPhysics()
+        initPhysics(true) {
+            calculateCollisions(this, it)
+        }
 
         //register events
         initEvents()
@@ -129,23 +133,21 @@ class Player(
 
 
     /** checked every frame in specific states, main collision method       */
-    fun calculateCollisions() {
-        //check for collisions with specific types
-        //activePhysics.isPlayerCollision()
-        //activePhysics.isSpriteCollision()
+    fun calculateCollisions(activePhysics: Physics, otherPhysics: Physics) {
+        //check type of collision
         //apply events
         //TODO
     }
 
 
     //collision callbacks
-    override fun onPlayerCollision(aabbOther: Physics) {
+    override fun onPlayerCollision(physicsOther: Physics) {
         //physics.calculate Collision and direction of collision
         //maybe change state or something...
         println("Ich Player kollidiere mit einem Player")
     }
 
-    override fun onEnemyCollision(aabbOther: Physics) {
+    override fun onEnemyCollision(physicsOther: Physics) {
         println("Ich Player kollidiere mit einem Enemy")
         //do nothing for now -> collision with other AI objects
     }
@@ -184,8 +186,6 @@ class Player(
     override fun executeState_idle(dt: Double) {
         timer += 1
         //println("Ich bin dabei, nichts zu tun")
-        calculateCollisions()
-        //physics.update(dt)
     }
 
     override fun endState_idle() { /* Nothing in here */
@@ -203,7 +203,6 @@ class Player(
         //println("Ich bin dabei zu laufen")
         timer += 1
         position.x += 5
-        calculateCollisions()
         //physics.update(dt, maxSpeed, xSpeedStep, true)
     }
 
@@ -219,7 +218,6 @@ class Player(
 
     override fun executeState_turn(dt: Double) {
         timer += 1
-        calculateCollisions()
         //physics.update(dt)
         if (model.animation.isCompleted) bus.send(StateTransition(walkState))
     }
@@ -240,7 +238,6 @@ class Player(
 
     override fun executeState_jump(dt: Double) {
         timer += 1
-        calculateCollisions()
         //physics.update(dt, maxSpeed * 0.8, xSpeedStep, false)
         if (model.animation.isCompleted) model.animation.play("steady") //TODO(Play idle based on direction)
     }
@@ -274,7 +271,6 @@ class Player(
     override fun executeState_normalAttack(dt: Double) {
         timer += 1
         //check if he collides with something -> this can take damage
-        calculateCollisions()
         //physics.update(dt)
         if (model.animation.isCompleted) {
             bus.send(StateTransition(idleState))
@@ -293,7 +289,6 @@ class Player(
 
     override fun executeState_rangedAttack(dt: Double) {
         timer += 1
-        calculateCollisions()
         //physics.update(dt)
         if (model.animation.isCompleted) {
             bus.send(StateTransition(idleState))
@@ -313,7 +308,6 @@ class Player(
     override fun executeState_specialAttack(dt: Double) {
         timer += 1
         //no physics update for now
-        calculateCollisions()
         if (model.animation.isCompleted) {
             doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
@@ -334,7 +328,6 @@ class Player(
     override fun executeState_getDamage(dt: Double) {
         //println("Ich bin dabei Schaden zu erhalten")
         timer += 1
-        calculateCollisions()
         //physics.update(dt)
         if (model.animation.isCompleted) {
             bus.send(StateTransition(idleState))

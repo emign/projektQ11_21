@@ -47,7 +47,7 @@ fun Vec2.getTangent(): Vec2 {
  * Calculates the closest point on a [Rectangle]s bounds to a specific point
  * @param point The point where we want to calculate the smallest distance to the rectangle
  */
-fun Rectangle.closestPointOnBoundsToPoint(point: Vec2): Vec2 {
+internal fun Rectangle.closestPointOnBoundsToPoint(point: Vec2): Vec2 {
     var minDist = abs(point.x - this.x.toFloat())
     var boundsPoint = Vec2(-minDist, 0.0f)
     if (abs(this.x + this.width - point.x) <= minDist) {

@@ -1,15 +1,10 @@
 package physic
 
-import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.SolidRect
 import com.soywiz.korma.geom.Rectangle
-import org.jbox2d.collision.AABB
-import org.jbox2d.common.MathUtils
 import org.jbox2d.common.Vec2
-import kotlin.math.abs
-import kotlin.math.tan
-import physic.force.ForceRegistry
 import physic.force.Damping
+import physic.force.ForceRegistry
 
 /**
  * Rigidbody-class. A [Physics]-object can be moved by the [Listener], can be updated with forces by the [ForceRegistry]
@@ -68,7 +63,7 @@ class Physics(
      * collided and is super useful for collision resolution
      * See [Listener.solveCollision] for the solving part
      * */
-    fun minkowskiDifference(other: Physics): Rectangle {
+    internal fun minkowskiDifference(other: Physics): Rectangle {
         val x = this.position.x - (other.position.x + other.width)
         val y = this.position.y - (other.position.y + other.height)
         val width = this.width + other.width

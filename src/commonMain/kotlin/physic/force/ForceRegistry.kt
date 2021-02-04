@@ -1,9 +1,7 @@
 package physic.force
 
 import com.soywiz.kds.iterators.fastForEach
-import com.soywiz.korma.geom.Point
 import org.jbox2d.common.Vec2
-import physic.Listener
 import physic.Physics
 
 /**

@@ -1,6 +1,8 @@
 package actor
 
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
+import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.SolidRect
 import com.soywiz.korma.geom.Point
 import eventBus.EventBus
 import fsm.StateManager
@@ -16,7 +18,7 @@ import physic.Physics
  * @param scope The current scope where the actor is initialized; used for the [EventBus]
  * @param actorXmlData The data read by [readCharacterXmlData]
  */
-abstract class MovingActor(val scope: CoroutineScope, val actorXmlData: ActorXmlData): Actor(), StateUser {
+abstract class MovingActor(parent: Container, val scope: CoroutineScope, val actorXmlData: ActorXmlData): Actor(parent), StateUser {
 
     val maxSpeed: Double = actorXmlData.movementSpeed
     val xSpeedStep: Double = 0.2

@@ -1,5 +1,7 @@
 package Scenes
 
+import addPhysicsComponent
+import addPhysicsComponentsTo
 import com.soywiz.korev.Key
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
@@ -8,12 +10,16 @@ import com.soywiz.korge.view.addUpdater
 import com.soywiz.korge.view.xy
 import com.soywiz.korim.color.Colors
 import org.jbox2d.common.Vec2
-import physic.addPhysicsComponentsTo
-import physic.physics
-import physic.usePhysics
+import physics
+import setupPhysicsSystem
 
 class Physics_Sample : Scene() {
     override suspend fun Container.sceneInit() {
+
+        /**
+         * Everything needed to work with physics-objects is contained in [PhysicsModule.kt].
+         * All the other things are managed internal
+         */
 
         //create 5 SolidRects
         val s1 = SolidRect(100, 100, Colors.RED).xy(50, 50).apply { name = "Rot" }
@@ -30,10 +36,14 @@ class Physics_Sample : Scene() {
         addChild(s5)
 
         //create a physics listener -> this function has to be called before attaching physicComponents to views, otherwise the physics will not be updated
-        usePhysics()
+        setupPhysicsSystem()
 
         //add physics to s1 and s5 and attach a collisionCallback
-        addPhysicsComponentsTo(s1, s5) {
+        s1.addPhysicsComponent() {
+            println("Ich ${owner.name} kollidiere mit ${it.owner.name}")
+        }
+
+        s5.addPhysicsComponent() {
             println("Ich ${owner.name} kollidiere mit ${it.owner.name}")
         }
 

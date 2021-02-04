@@ -5,22 +5,22 @@ import actor.MovingActor
 import actor.readCharacterXmlData
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.dragonbones.KorgeDbFactory
+import com.soywiz.korge.view.Container
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import kotlinx.coroutines.CoroutineScope
+import org.jbox2d.common.Vec2
 import physic.Physics
 
-class Bullet(override val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlData: ActorXmlData): MovingActor(scope, actorXmlData) {
-    /*override val physics: Physics
-        get() = TODO("Not yet implemented")*/
+class Bullet(parent: Container, override val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlData: ActorXmlData): MovingActor(parent, scope, actorXmlData) {
 
     init {
         onCreate()
     }
 
     companion object {
-        suspend fun build(xmlFile: String, scope: CoroutineScope): Bullet {
+        suspend fun build(xmlFile: String, scope: CoroutineScope, parent: Container): Bullet {
             val characterXmlData = resourcesVfs[xmlFile].readCharacterXmlData()
 
             val ske = resourcesVfs[characterXmlData.skeletonJsonFile].readString()
@@ -33,7 +33,7 @@ class Bullet(override val model: KorgeDbArmatureDisplay, scope: CoroutineScope, 
             val atlas = factory.parseTextureAtlasData(Json.parse(tex)!!, img)
 
             val model = factory.buildArmatureDisplay(characterXmlData.dbName)!!
-            return Bullet(model, scope, characterXmlData)
+            return Bullet(parent, model, scope, characterXmlData)
         }
     }
 

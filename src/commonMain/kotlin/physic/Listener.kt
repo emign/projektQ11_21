@@ -10,9 +10,13 @@ import physic.force.Gravity
  * This is the place, where all the magic happens. The Listener updates all [Physics]-objects and performs collision-detection
  * @param gravityAcc The acceleration of the gravity as a [Vec2]. Usually 9.81 m/s^2
  */
+object PhysicsListener {
 
-class Listener(val gravityAcc: Vec2) {
+    private var gravityAcc: Vec2 = Vec2(0.0f, 9.81f)
 
+    internal operator fun invoke(gravity: Vec2) {
+        this.gravityAcc = gravity
+    }
 
     private var forceRegistry = ForceRegistry()
     private var gravity = Gravity(Vec2(gravityAcc))
@@ -55,7 +59,7 @@ class Listener(val gravityAcc: Vec2) {
      * Calculating velocities and positions for each physics-object added to the Listener. This also performs collision detection and resolution
      * @param dt The time elapsed since the last frame
      */
-    fun applyPhysics(dt: Float) {
+    private fun applyPhysics(dt: Float) {
         //milliseconds to seconds
         val ms = dt / 1000.0f
         activeObjects.fastForEach { activePhysics ->
@@ -99,7 +103,7 @@ class Listener(val gravityAcc: Vec2) {
      * At last, the custom collision [Physics.callback] is executed for both objects. It can contain extra code to execute on
      * Collision, for example taking damage.
      */
-    internal fun solveCollision(r1: Physics, r2: Physics) {
+    private fun solveCollision(r1: Physics, r2: Physics) {
         val md = r1.minkowskiDifference(r2)
         if (md.x <= 0 && md.y <= 0 && md.x + md.width >= 0 && md.y + md.height >= 0) {
             val solvingVector = md.closestPointOnBoundsToPoint(Vec2(0.0f, 0.0f))
