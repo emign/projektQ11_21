@@ -3,6 +3,7 @@ package Scenes
 import addPhysicsComponent
 import addPhysicsComponentsTo
 import com.soywiz.korev.Key
+import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.SolidRect
@@ -52,6 +53,7 @@ class Physics_Sample : Scene() {
 
         //simple input system for moving s1 and s5
         addUpdater {
+            keys.down {  }
             if (views.keys[Key.UP]) if (s1.physics?.isGrounded == true) s1.physics?.addForce(Vec2(0.0f, -400.0f))
             if (views.keys[Key.LEFT]) s1.physics?.addForce(Vec2(-10.0f, 0.0f))
             if (views.keys[Key.RIGHT]) s1.physics?.addForce(Vec2(10.0f, 0.0f))

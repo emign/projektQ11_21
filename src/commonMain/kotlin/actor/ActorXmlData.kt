@@ -25,7 +25,7 @@ open class Attack(
     val name: String,
     val damage: Double,
     val blockable: Boolean,
-    val cooldown: TimeSpan,
+    val cooldown: Double,
     val isReady: Boolean
 )
 
@@ -33,7 +33,7 @@ class NormalAttack(
     name: String,
     damage: Double,
     blockable: Boolean,
-    cooldown: TimeSpan,
+    cooldown: Double,
     isReady: Boolean
 ) : Attack(name, damage, blockable, cooldown, isReady)
 
@@ -41,7 +41,7 @@ class RangedAttack(
     name: String,
     damage: Double,
     blockable: Boolean,
-    cooldown: TimeSpan,
+    cooldown: Double,
     isReady: Boolean
 ) : Attack(name, damage, blockable, cooldown, isReady)
 
@@ -49,7 +49,7 @@ class SpecialAttack(
     name: String,
     damage: Double,
     blockable: Boolean,
-    cooldown: TimeSpan,
+    cooldown: Double,
     isReady: Boolean
 ) : Attack(name, damage, blockable, cooldown, isReady)
 
@@ -77,7 +77,7 @@ suspend fun VfsFile.readCharacterXmlData(): ActorXmlData {
         val attackName = it.attribute("name") ?: ""
         val damage = it.attribute("damage")?.toDouble() ?: 0.0
         val blockable: Boolean = it.attribute("blockable") == "true"
-        val cooldown = TimeSpan(it.attribute("cooldown")?.toDouble() ?: 0.0)
+        val cooldown = it.attribute("cooldown")?.toDouble() ?: 0.0
         val isReady: Boolean = it.attribute("isready") == "true"
 
         //create actor.Attack
