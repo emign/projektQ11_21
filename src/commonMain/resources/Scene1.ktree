@@ -1,8 +1,0 @@
-<ktree width="1280.0" height="720.0" gridWidth="20" gridHeight="20">
-	<solidrect name="r1" colorMul="#ff1d30ff" x="620.0" y="200.0" width="300.0" height="280.0">
-		<__ex_physics type="DYNAMIC" linearVelocityY="23.676775" friction="0.2" restitution="0.2"/>
-	</solidrect>
-	<ellipse colorMul="#ffd600ff" x="380.0" y="280.0" anchorX="0.5" anchorY="0.5" width="100.0" height="100.0">
-		<__ex_physics type="DYNAMIC" friction="0.2" restitution="0.2"/>
-	</ellipse>
-</ktree>
