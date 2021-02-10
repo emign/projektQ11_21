@@ -1,3 +1,3 @@
 package eventBus
 
-abstract class Event {}
+interface Event {}
