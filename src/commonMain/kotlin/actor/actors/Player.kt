@@ -111,15 +111,7 @@ class Player(
     }
 
     override fun initEvents() {
-        bus.register<PlayerCollision> { onPlayerCollision(it.aabb) }
-        bus.register<EnemyCollision> { onPlayerCollision(it.aabb) }
-        bus.register<GroundCollision> { onGroundCollision() }
-        bus.register<PlatformCollision> { onPlatformCollision(it.aabb) }
-        bus.register<NormalAttackCollision> { onNormalAttackCollision(it.damage) }
-        bus.register<RangedAttackCollision> { onRangedAttackCollision(it.damage) }
-        bus.register<SpecialAttackCollision> { onSpecialAttackCollision(it.damage) }
 
-        bus.register<StateTransition> { doStateChange(it.state) }
     }
 
     //maybe?
@@ -219,7 +211,7 @@ class Player(
     override fun executeState_turn(dt: Double) {
         timer += 1
         //physics.update(dt)
-        if (model.animation.isCompleted) bus.send(StateTransition(walkState))
+        if (model.animation.isCompleted){}
     }
 
     override fun endState_turn() { /* Nothing in here */
@@ -273,7 +265,7 @@ class Player(
         //check if he collides with something -> this can take damage
         //physics.update(dt)
         if (model.animation.isCompleted) {
-            bus.send(StateTransition(idleState))
+
         }
     }
 
@@ -291,7 +283,7 @@ class Player(
         timer += 1
         //physics.update(dt)
         if (model.animation.isCompleted) {
-            bus.send(StateTransition(idleState))
+
         }
     }
 
@@ -330,7 +322,7 @@ class Player(
         timer += 1
         //physics.update(dt)
         if (model.animation.isCompleted) {
-            bus.send(StateTransition(idleState))
+
         }
     }
 

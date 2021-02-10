@@ -4,7 +4,7 @@ import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.SolidRect
 import com.soywiz.korma.geom.Point
-import eventBus.EventBus
+import eventBus.*
 import fsm.StateManager
 import fsm.StateUser
 import fsm.declareState
@@ -36,8 +36,6 @@ abstract class MovingActor(parent: Container, val scope: CoroutineScope, val act
     val specialAttack: Attack = actorXmlData.specialAttack
 
     var getDamageCooldown: Int = 120
-
-    val bus: EventBus = EventBus(scope)
 
     var baseLine: Double = this.y + this.height
 
