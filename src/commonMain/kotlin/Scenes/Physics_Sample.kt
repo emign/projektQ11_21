@@ -5,10 +5,7 @@ import addPhysicsComponentsTo
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.SolidRect
-import com.soywiz.korge.view.addUpdater
-import com.soywiz.korge.view.xy
+import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import org.jbox2d.common.Vec2
 import physics
@@ -29,6 +26,13 @@ class Physics_Sample : Scene() {
         val s4 = SolidRect(75, 120, Colors.YELLOW).xy(100, 500).apply { name = "Gelb" }
         val s5 = SolidRect(75, 120, Colors.PURPLE).xy(100, 300).apply { name = "Purple" }
 
+
+        val k1 = Circle()
+        k1.fill = Colors.ORANGERED
+        k1.radius = 50.0
+
+        addChild(k1)
+
         //add them to the stage
         addChild(s1)
         addChild(s2)
@@ -39,6 +43,10 @@ class Physics_Sample : Scene() {
         //create a physics listener -> this function has to be called before attaching physicComponents to views, otherwise the physics will not be updated
         setupPhysicsSystem()
 
+
+        k1.addPhysicsComponent {
+            println("KREISS BOUNCT BOUNCT")
+        }
         //add physics to s1 and s5 and attach a collisionCallback
         s1.addPhysicsComponent() {
             println("Ich ${owner.name} kollidiere mit ${it.owner.name}")
@@ -51,12 +59,14 @@ class Physics_Sample : Scene() {
         //add physics to s2, s3 and s4, but they should be solid (not dynamic) and have no callback
         addPhysicsComponentsTo(s2, s3, s4, isDynamic = false)
 
+
+
         //simple input system for moving s1 and s5
         addUpdater {
             keys.down {  }
-            if (views.keys[Key.UP]) if (s1.physics?.isGrounded == true) s1.physics?.addForce(Vec2(0.0f, -400.0f))
-            if (views.keys[Key.LEFT]) s1.physics?.addForce(Vec2(-10.0f, 0.0f))
-            if (views.keys[Key.RIGHT]) s1.physics?.addForce(Vec2(10.0f, 0.0f))
+            if (views.keys[Key.UP]) if (k1.physics?.isGrounded == true) s1.physics?.addForce(Vec2(0.0f, -400.0f))
+            if (views.keys[Key.LEFT]) k1.physics?.addForce(Vec2(-10.0f, 0.0f))
+            if (views.keys[Key.RIGHT]) k1.physics?.addForce(Vec2(10.0f, 0.0f))
             if (views.keys[Key.W]) if (s5.physics?.isGrounded == true) s5.physics?.addForce(Vec2(0.0f, -400.0f))
             if (views.keys[Key.A]) s5.physics?.addForce(Vec2(-10.0f, 0.0f))
             if (views.keys[Key.D]) s5.physics?.addForce(Vec2(10.0f, 0.0f))

@@ -1,6 +1,7 @@
 package physic
 
 import com.soywiz.korge.view.SolidRect
+import com.soywiz.korge.view.View
 import com.soywiz.korma.geom.Rectangle
 import org.jbox2d.common.Vec2
 import physic.force.Damping
@@ -17,11 +18,11 @@ import physic.force.ForceRegistry
  */
 
 class Physics(
-    val owner: SolidRect,
-    var friction: Vec2,
-    var isDynamic: Boolean,
-    val coefficient: Vec2 = Vec2(120f, 120f),
-    val callback: Physics.(Physics) -> Unit
+        val owner: View,
+        var friction: Vec2,
+        var isDynamic: Boolean,
+        val coefficient: Vec2 = Vec2(120f, 120f),
+        val callback: Physics.(Physics) -> Unit
 ) {
 
     var position = Vec2(owner.pos.x.toFloat(), owner.pos.y.toFloat())
