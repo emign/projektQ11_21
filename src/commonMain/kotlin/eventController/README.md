@@ -37,22 +37,23 @@ Das Event, welches hier angegeben wird, bestimmt welche callbacks aufgerufen wer
 auch als Parameter übergeben. Somit kann man auch Daten von dem Sender des Events zum Empfänger übertragen.
 
 ###4. Beispielcode
+```kotlin
 class MeineScene() : Scene(){
        var tmp = "a"
     override suspend fun Container.sceneInit() {
-        var eventController = EventController(this)
-            eventController.register<MeinEvent>{ event -> 
-                tmp = event.string
-            }
-    
+        var eventController = EventController(this@MeineScene)
+        
+        eventController.register<MeinEvent>{ event -> 
+            tmp = event.string
+        }
+        
+        eventController.send(MeineKlasse(b))
     }
 
 
 }
 
-class MeineKlasse(){
+class MeineKlasse():Event(){
     class MeinEvent(var string : String) : Event()
-    fun send(){
-       eventController.send(MeinEvent)
-    }
 }
+```
