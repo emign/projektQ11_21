@@ -1,4 +1,4 @@
-package eventBus
+package eventController
 
 import com.soywiz.korge.bus.*
 import com.soywiz.korio.async.*

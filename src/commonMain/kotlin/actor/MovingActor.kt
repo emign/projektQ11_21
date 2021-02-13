@@ -2,15 +2,12 @@ package actor
 
 import com.soywiz.korge.dragonbones.KorgeDbArmatureDisplay
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.SolidRect
-import com.soywiz.korma.geom.Point
-import eventBus.*
+import eventController.*
 import fsm.StateManager
 import fsm.StateUser
 import fsm.declareState
 import fsm.useStates
 import kotlinx.coroutines.CoroutineScope
-import physic.Direction
 import physic.Physics
 
 /**

@@ -1,0 +1,3 @@
+package eventController
+
+interface Event {}

@@ -3,8 +3,6 @@ package Scenes
 //import fsm.Entity
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
-import eventBus.*
-import kotlinx.coroutines.*
 
 class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
