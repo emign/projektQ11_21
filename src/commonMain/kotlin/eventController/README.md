@@ -53,7 +53,7 @@ class MeineScene() : Scene(){
 
 }
 
-class MeinEvent(var string : String) : Event(){
+class MeinEvent(var string : String) : Event{
 
 }
 

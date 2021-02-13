@@ -6,7 +6,7 @@ import kotlinx.coroutines.*
 import kotlin.reflect.*
 
 /**
- * Objekt eventController handles Events globally
+ * the Objekt eventController handles Events globally
  */
 object eventController {
 
@@ -15,7 +15,7 @@ object eventController {
     private val scope = Dispatchers.Default
 
     /**
-     * Sends an Event through the EventController with the [Event] as Parameter
+     * Sends an Event through the eventController with the [Event] as Parameter
      * @param message is the [Event] that needs to be sent
      */
     fun send(message: Event) {
