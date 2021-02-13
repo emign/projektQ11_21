@@ -49,6 +49,8 @@ class MeineScene() : Scene(){
             tmp = event.string
         }
         
+        val meinObjekt = MeineKlasse(eventController)
+        
     }
 
 
