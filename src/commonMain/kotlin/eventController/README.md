@@ -56,6 +56,8 @@ class MeineScene() : Scene(){
 }
 
 class MeineKlasse(){
-    class MeinEvent(var string : String) : Event()
+    class MeinEvent(var string : String) : Event(){
+        
+    }
 }
 ```
