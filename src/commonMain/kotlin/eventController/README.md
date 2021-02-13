@@ -39,7 +39,9 @@ auch als Parameter übergeben. Somit kann man auch Daten von dem Sender des Even
 ### 4. Beispielcode
 ```kotlin
 class MeineScene() : Scene(){
-       var tmp = "a"
+    
+    var tmp = "a"
+    
     override suspend fun Container.sceneInit() {
         var eventController = EventController(this@MeineScene)
         
@@ -47,13 +49,13 @@ class MeineScene() : Scene(){
             tmp = event.string
         }
         
-        eventController.send(MeineKlasse(b))
+        eventController.send(MeinEvent(b))
     }
 
 
 }
 
-class MeineKlasse():Event(){
+class MeineKlasse(){
     class MeinEvent(var string : String) : Event()
 }
 ```
