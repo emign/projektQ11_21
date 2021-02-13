@@ -35,3 +35,24 @@ eventController.send(MeinEvent("was auch immer"))
 ```
 Das Event, welches hier angegeben wird, bestimmt welche callbacks aufgerufen werden und werden den callbacks 
 auch als Parameter übergeben. Somit kann man auch Daten von dem Sender des Events zum Empfänger übertragen.
+
+###4. Beispielcode
+class MeineScene() : Scene(){
+       var tmp = "a"
+    override suspend fun Container.sceneInit() {
+        var eventController = EventController(this)
+            eventController.register<MeinEvent>{ event -> 
+                tmp = event.string
+            }
+    
+    }
+
+
+}
+
+class MeineKlasse(){
+    class MeinEvent(var string : String) : Event()
+    fun send(){
+       eventController.send(MeinEvent)
+    }
+}
