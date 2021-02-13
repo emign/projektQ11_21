@@ -5,6 +5,10 @@ import com.soywiz.korio.async.*
 import kotlinx.coroutines.*
 import kotlin.reflect.*
 
+/**
+ * creates a EventController
+ * @param scope defines a CorutineScope to launch the send Actions from
+ */
 class EventController(private val scope: CoroutineScope) {
 
     private val bus = GlobalBus()
