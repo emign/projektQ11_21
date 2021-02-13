@@ -1,13 +1,13 @@
-#Event Controller Documentation
+# Event Controller Documentation
 ___
-###1. Erstellen eines EventControllers
+### 1. Erstellen eines EventControllers
 Erstellt wird ein EventController mit:
 ```kotlin
 var eventController = EventController(scope)
 ```
 wobei `scope` ein CoroutineScope sein muss, in dem der EventController ausgeführt werden soll.
 
-###2. Erstellen eines Events
+### 2. Erstellen eines Events
 Zuerst muss eine Klasse erstellt werden, die das leere Interface Event implementiert:
 ```kotlin
 class MeinEvent(var meinWert : Any) : Event{
@@ -28,7 +28,7 @@ Die Variable `event` ist dann das Event-Objekt, das gesendet wurde.
 Im callback können natürlich auch Funktionen aufgerufen werden.
 Der callback erwartet keine return Expression.
 
-###3. Triggern eines Events
+### 3. Triggern eines Events
 Um ein Event zu triggern wird wieder die Instanz des EventControllers und eine Instanz des verwendeten Events benötigt:
 ```kotlin
 eventController.send(MeinEvent("was auch immer"))
