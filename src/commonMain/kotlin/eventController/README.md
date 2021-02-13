@@ -5,7 +5,7 @@ Erstellt wird ein EventController mit:
 ```kotlin
 var eventController = EventController(scope)
 ```
-wobei [scope] ein CoroutineScope sein muss, in dem der EventController ausgeführt werden soll.
+wobei `scope` ein CoroutineScope sein muss, in dem der EventController ausgeführt werden soll.
 
 ###2. Erstellen eines Events
 Zuerst muss eine Klasse erstellt werden, die das leere Interface Event implementiert:
@@ -23,8 +23,8 @@ eventController.register<MeinEvent>{ event ->
     //tue was sinnvolles
 }
 ```
-Dieser callback wird dann jedes Mal ausgeführt, wenn [MeinEvent] getriggert wird.
-Die Variable [event] ist dann das Event-Objekt, das gesendet wurde.
+Dieser callback wird dann jedes Mal ausgeführt, wenn `MeinEvent` getriggert wird.
+Die Variable `event` ist dann das Event-Objekt, das gesendet wurde.
 Im callback können natürlich auch Funktionen aufgerufen werden.
 Der callback erwartet keine return Expression.
 
