@@ -9,7 +9,7 @@ import com.soywiz.korge.view.xy
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
-import eventBus.*
+import eventController.*
 import fsm.*
 import kotlinx.coroutines.CoroutineScope
 import org.jbox2d.dynamics.*

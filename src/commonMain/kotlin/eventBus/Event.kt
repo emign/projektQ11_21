@@ -1,3 +1,0 @@
-package eventBus
-
-interface Event {}
