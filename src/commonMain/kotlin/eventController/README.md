@@ -49,15 +49,20 @@ class MeineScene() : Scene(){
             tmp = event.string
         }
         
-        eventController.send(MeinEvent(b))
     }
 
 
 }
 
-class MeineKlasse(){
-    class MeinEvent(var string : String) : Event(){
-        
+class MeinEvent(var string : String) : Event(){
+
+}
+
+class MeineKlasse(val eventController : EventController){
+    
+    init {
+        eventController.send(MeinEvent("b"))
     }
+    
 }
 ```
