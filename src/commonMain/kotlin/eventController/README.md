@@ -1,13 +1,6 @@
 # Event Controller Documentation
 ___
-### 1. Erstellen eines EventControllers
-Erstellt wird ein EventController mit:
-```kotlin
-var eventController = EventController(scope)
-```
-wobei `scope` ein CoroutineScope sein muss, in dem der EventController ausgeführt werden soll.
-
-### 2. Erstellen eines Events
+### 1. Erstellen eines Events
 Zuerst muss eine Klasse erstellt werden, die das leere Interface Event implementiert:
 ```kotlin
 class MeinEvent(var meinWert : Any) : Event{
@@ -28,7 +21,7 @@ Die Variable `event` ist dann das Event-Objekt, das gesendet wurde.
 Im callback können natürlich auch Funktionen aufgerufen werden.
 Der callback erwartet keine return Expression.
 
-### 3. Triggern eines Events
+### 2. Triggern eines Events
 Um ein Event zu triggern wird wieder die Instanz des EventControllers und eine Instanz des verwendeten Events benötigt:
 ```kotlin
 eventController.send(MeinEvent("was auch immer"))
@@ -36,7 +29,7 @@ eventController.send(MeinEvent("was auch immer"))
 Das Event, welches hier angegeben wird, bestimmt welche callbacks aufgerufen werden und werden den callbacks 
 auch als Parameter übergeben. Somit kann man auch Daten von dem Sender des Events zum Empfänger übertragen.
 
-### 4. Beispiel
+### 3. Beispiel
 
 Beispielcode:
 ```kotlin
@@ -45,15 +38,13 @@ class MeineScene() : Scene(){
     var tmp = "a"
     
     override suspend fun Container.sceneInit() {
-        var eventController = EventController(this@MeineScene)
-        
         eventController.register<MeinEvent>{ event -> 
             tmp = event.string
         }
         
         println(tmp)
         
-        val meinObjekt = MeineKlasse(eventController)
+        val meinObjekt = MeineKlasse()
         
         println(tmp)
         
@@ -66,7 +57,7 @@ class MeinEvent(var string : String) : Event(){
 
 }
 
-class MeineKlasse(val eventController : EventController){
+class MeineKlasse(){
     
     init {
         eventController.send(MeinEvent("b"))

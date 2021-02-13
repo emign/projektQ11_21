@@ -6,19 +6,20 @@ import kotlinx.coroutines.*
 import kotlin.reflect.*
 
 /**
- * creates a EventController
- * @param scope defines a CorutineScope to launch the send Actions from
+ * Objekt eventController handles Events globally
  */
-class EventController(private val scope: CoroutineScope) {
+object eventController {
 
     private val bus = GlobalBus()
+
+    private val scope = Dispatchers.Default
 
     /**
      * Sends an Event through the EventController with the [Event] as Parameter
      * @param message is the [Event] that needs to be sent
      */
     fun send(message: Event) {
-        scope.launchImmediately {
+        launchImmediately(scope) {
             bus.send(message)
         }
     }
