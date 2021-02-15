@@ -1,0 +1,5 @@
+package Steuerung
+
+class InputController {
+
+}
