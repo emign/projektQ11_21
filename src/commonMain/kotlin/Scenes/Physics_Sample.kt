@@ -24,7 +24,7 @@ class Physics_Sample : Scene() {
         val s2 = SolidRect(200, 800, Colors.BLUE).xy(400, 400).apply { name = "Blau" }
         val s3 = SolidRect(50, 200, Colors.GREEN).xy(300, 500).apply { name = "Grün" }
         val s4 = SolidRect(75, 120, Colors.YELLOW).xy(100, 500).apply { name = "Gelb" }
-        val s5 = SolidRect(75, 120, Colors.PURPLE).xy(100, 300).apply { name = "Purple" }
+        val s5 = Circle(75.0, Colors.PURPLE).xy(100, 300).apply { name = "Purple" }
 
         //add them to the stage
         addChild(s1)

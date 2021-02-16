@@ -1,10 +1,14 @@
 package physic.internal
 
 import com.soywiz.kds.iterators.fastForEach
+import com.soywiz.korge.view.Circle
+import com.soywiz.korge.view.SolidRect
 import org.jbox2d.common.Vec2
 import physic.internal.forces.Damping
 import physic.internal.forces.ForceRegistry
 import physic.internal.forces.Gravity
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 /**
  * This is the place, where all the magic happens. The Listener updates all [Physics]-objects and performs collision-detection
@@ -104,32 +108,56 @@ object PhysicsListener {
      * Collision, for example taking damage.
      */
     private fun solveCollision(r1: Physics, r2: Physics) {
-        val md = r1.minkowskiDifference(r2)
-        if (md.x <= 0 && md.y <= 0 && md.x + md.width >= 0 && md.y + md.height >= 0) {
-            val solvingVector = md.closestPointOnBoundsToPoint(Vec2(0.0f, 0.0f))
-            if (solvingVector.x == 0.0f) {
-                if (solvingVector.y > 0.00) {
-                    if (r1.velocity.y > 0) r1.velocity.y = 0.0f
-                    r1.isGrounded = true
-                    if (r1.position.y + r1.height > r2.position.y) r1.position.y =
-                        (r2.position.y - r1.height).toFloat()
-                } else {
-                    r1.velocity.y = 2.0f
-                    r1.force.y = gravityAcc.y
+        if((r1.owner is SolidRect && r2.owner is SolidRect) || (r1.owner is SolidRect && r2.owner is Circle) || (r1.owner is Circle && r2.owner is SolidRect)) {
+            val md = r1.minkowskiDifference(r2)
+            if (md.x <= 0 && md.y <= 0 && md.x + md.width >= 0 && md.y + md.height >= 0) {
+                val solvingVector = md.closestPointOnBoundsToPoint(Vec2(0.0f, 0.0f))
+                if (solvingVector.x == 0.0f) {
+                    if (solvingVector.y > 0.00) {
+                        if (r1.velocity.y > 0) r1.velocity.y = 0.0f
+                        r1.isGrounded = true
+                        if (r1.position.y + r1.height > r2.position.y) r1.position.y =
+                            (r2.position.y - r1.height).toFloat()
+                    } else {
+                        r1.velocity.y = 2.0f
+                        r1.force.y = gravityAcc.y
+                    }
+                } else if (solvingVector.y == 0.0f) {
+                    if (solvingVector.x > 0.00 && r1.velocity.x > 0) {
+                        r1.velocity.x *= -0.3f
+                        if (r1.position.x + r1.width > r2.position.x) r1.position.x =
+                            (r2.position.x - r1.width).toFloat()
+                    } else if (solvingVector.x < 0 && r1.velocity.x < 0) {
+                        r1.velocity.x *= -0.3f
+                        if (r1.position.x < r2.width + r2.position.x) r1.position.x =
+                            (r2.position.x + r2.width).toFloat()
+                    }
                 }
-            } else if (solvingVector.y == 0.0f) {
-                if (solvingVector.x > 0.00 && r1.velocity.x > 0) {
-                    r1.velocity.x *= -0.3f
-                    if (r1.position.x + r1.width > r2.position.x) r1.position.x =
-                        (r2.position.x - r1.width).toFloat()
-                } else if (solvingVector.x < 0 && r1.velocity.x < 0) {
-                    r1.velocity.x *= -0.3f
-                    if (r1.position.x < r2.width + r2.position.x) r1.position.x =
-                        (r2.position.x + r2.width).toFloat()
-                }
+                r1.callback(r1, r2)
+                r2.callback(r2, r1)
             }
-            r1.callback(r1, r2)
-            r2.callback(r2, r1)
+        } else if (r1.owner is Circle && r2.owner is Circle) {
+            var normal = r2.position + Vec2(r2.owner.radius.toFloat(), r2.owner.radius.toFloat()) - (r1.position + Vec2(r1.owner.radius.toFloat(), r1.owner.radius.toFloat()))
+            val distSqrd = normal.lengthSquared()
+            val radius = r1.owner.radius + r2.owner.radius
+            if (distSqrd < radius * radius) {
+                if (normal.y > 0.0) r1.isGrounded = true
+                val dist = sqrt(distSqrd)
+                val penetration = radius - dist
+                normal *= (1.0f / dist)
+                //if (r1.velocity.length() > 0.01f) {
+                    r1.position += normal * penetration * -1.1f
+                    r1.velocity += normal * penetration * -1.0f * 0.3f
+                //} else r1.velocity.x = 0.0f
+                /*if (abs(r1.velocity.y) > 0.01f) {
+                    r1.velocity.y += (normal.y * penetration * -1.0f).toFloat()
+                    r1.velocity.y = r1.velocity.y * 0.3f
+                } else r1.velocity.y = 0.0f*/
+                //r1.position.x += (normal.x * penetration * -1.0f).toFloat()
+                //r1.position.y += (normal.y * penetration * -1.0f).toFloat()
+                r1.callback(r1, r2)
+                r2.callback(r2, r1)
+            }
         }
     }
 
