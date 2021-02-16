@@ -19,8 +19,14 @@ import physic.internal.PhysicsListener
  */
 fun Container.setupPhysicsSystem(gravity: Vec2 = Vec2(0f, 9.81f)) {
     PhysicsListener(gravity)
+    var accumulator = 0.0
     this.addUpdater {
-        PhysicsListener.update(it.milliseconds.toFloat())
+        //accumulator += it.milliseconds
+        //if (accumulator > 0.15) accumulator = 0.15
+        //while (accumulator > 1.0f/60.0f) {
+            PhysicsListener.update(it.milliseconds.toFloat())
+          //  accumulator -= 1.0f/60.0f
+        //}
     }
 }
 

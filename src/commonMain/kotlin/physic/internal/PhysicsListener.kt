@@ -7,7 +7,6 @@ import org.jbox2d.common.Vec2
 import physic.internal.forces.Damping
 import physic.internal.forces.ForceRegistry
 import physic.internal.forces.Gravity
-import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -81,7 +80,7 @@ object PhysicsListener {
                 activePhysics.isGrounded = false
 
                 //collision detection and solving
-                activeObjects.filter { it != activePhysics && it.layer != activePhysics.layer}.fastForEach {
+                activeObjects.filter { it != activePhysics && it.layer != activePhysics.layer }.fastForEach {
                     solveCollision(activePhysics, it)
                 }
 
@@ -108,7 +107,7 @@ object PhysicsListener {
      * Collision, for example taking damage.
      */
     private fun solveCollision(r1: Physics, r2: Physics) {
-        if((r1.owner is SolidRect && r2.owner is SolidRect) || (r1.owner is SolidRect && r2.owner is Circle) || (r1.owner is Circle && r2.owner is SolidRect)) {
+        if ((r1.owner is SolidRect && r2.owner is SolidRect)) {
             val md = r1.minkowskiDifference(r2)
             if (md.x <= 0 && md.y <= 0 && md.x + md.width >= 0 && md.y + md.height >= 0) {
                 val solvingVector = md.closestPointOnBoundsToPoint(Vec2(0.0f, 0.0f))
@@ -137,7 +136,10 @@ object PhysicsListener {
                 r2.callback(r2, r1)
             }
         } else if (r1.owner is Circle && r2.owner is Circle) {
-            var normal = r2.position + Vec2(r2.owner.radius.toFloat(), r2.owner.radius.toFloat()) - (r1.position + Vec2(r1.owner.radius.toFloat(), r1.owner.radius.toFloat()))
+            var normal = r2.position + Vec2(
+                r2.owner.radius.toFloat(),
+                r2.owner.radius.toFloat()
+            ) - (r1.position + Vec2(r1.owner.radius.toFloat(), r1.owner.radius.toFloat()))
             val distSqrd = normal.lengthSquared()
             val radius = r1.owner.radius + r2.owner.radius
             if (distSqrd < radius * radius) {
@@ -145,16 +147,45 @@ object PhysicsListener {
                 val dist = sqrt(distSqrd)
                 val penetration = radius - dist
                 normal *= (1.0f / dist)
-                //if (r1.velocity.length() > 0.01f) {
-                    r1.position += normal * penetration * -1.1f
-                    r1.velocity += normal * penetration * -1.0f * 0.3f
-                //} else r1.velocity.x = 0.0f
-                /*if (abs(r1.velocity.y) > 0.01f) {
-                    r1.velocity.y += (normal.y * penetration * -1.0f).toFloat()
-                    r1.velocity.y = r1.velocity.y * 0.3f
-                } else r1.velocity.y = 0.0f*/
-                //r1.position.x += (normal.x * penetration * -1.0f).toFloat()
-                //r1.position.y += (normal.y * penetration * -1.0f).toFloat()
+                r1.position += normal * penetration * -1.1f
+                r1.velocity += normal * penetration * -1.0f * 0.3f
+                r1.callback(r1, r2)
+                r2.callback(r2, r1)
+            }
+        } else if (r1.owner is SolidRect && r2.owner is Circle) {
+            //solidrect to circle
+            //cirle to solidrect
+            val newX = clamp(r1.x, r1.x + r1.width, r2.x + r2.owner.radius)
+            val newY = clamp(r1.y, r1.y + r1.height, r2.y + r2.owner.radius)
+            val vert = Vec2(newX, newY)
+            var normal = (r2.position + Vec2(r2.owner.radius.toFloat(), r2.owner.radius.toFloat())) - vert
+            val distSqrd = normal.lengthSquared()
+
+            if (distSqrd < r2.owner.radius * r2.owner.radius) {
+                val dist = sqrt(distSqrd)
+                normal *= (1.0f/dist)
+                if (normal.y > 1.41/2.0f) r2.isGrounded = true
+                val penetration = r2.owner.radius - dist
+                r1.position += normal * penetration * -1.0f
+                r1.velocity += normal * penetration * -1.0f * 0.3
+                r1.callback(r1, r2)
+                r2.callback(r2, r1)
+            }
+        } else if (r1.owner is Circle && r2.owner is SolidRect) {
+            //cirle to solidrect
+            val newX = clamp(r2.x, r2.x + r2.width, r1.x + r1.owner.radius)
+            val newY = clamp(r2.y, r2.y + r2.height, r1.y + r1.owner.radius)
+            val vert = Vec2(newX, newY)
+            var normal = vert - (r1.position + Vec2(r1.owner.radius.toFloat(), r1.owner.radius.toFloat()))
+            val distSqrd = normal.lengthSquared()
+
+            if (distSqrd < r1.owner.radius * r1.owner.radius) {
+                val dist = sqrt(distSqrd)
+                normal *= (1.0f/dist)
+                if (normal.y > 1.41/2.0f) r1.isGrounded = true
+                val penetration = r1.owner.radius - dist
+                r1.position += normal * penetration * -1.0f
+                r1.velocity += normal * penetration * -1.0f * 0.3
                 r1.callback(r1, r2)
                 r2.callback(r2, r1)
             }

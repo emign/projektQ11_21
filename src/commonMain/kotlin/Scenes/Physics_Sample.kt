@@ -8,6 +8,7 @@ import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import org.jbox2d.common.Vec2
+import physic.internal.times
 import physic.physics
 import physic.setupPhysicsSystem
 
@@ -24,7 +25,7 @@ class Physics_Sample : Scene() {
         val s2 = SolidRect(200, 800, Colors.BLUE).xy(400, 400).apply { name = "Blau" }
         val s3 = SolidRect(50, 200, Colors.GREEN).xy(300, 500).apply { name = "Grün" }
         val s4 = SolidRect(75, 120, Colors.YELLOW).xy(100, 500).apply { name = "Gelb" }
-        val s5 = Circle(75.0, Colors.PURPLE).xy(100, 300).apply { name = "Purple" }
+        val s5 = SolidRect(55.0, 100.0, Colors.PURPLE).xy(100, 300).apply { name = "Purple" }
 
         //add them to the stage
         addChild(s1)
@@ -58,9 +59,9 @@ class Physics_Sample : Scene() {
             if (views.keys[Key.UP]) if (s1.physics?.isGrounded == true) s1.physics?.addForce(Vec2(0.0f, -400.0f))
             if (views.keys[Key.LEFT]) s1.physics?.addForce(Vec2(-10.0f, 0.0f))
             if (views.keys[Key.RIGHT]) s1.physics?.addForce(Vec2(10.0f, 0.0f))
-            //if (views.keys[Key.W]) if (s5.physics?.isGrounded == true) s5.physics?.addForce(Vec2(0.0f, -400.0f))
-            //if (views.keys[Key.A]) s5.physics?.addForce(Vec2(-10.0f, 0.0f))
-            //if (views.keys[Key.D]) s5.physics?.addForce(Vec2(10.0f, 0.0f))
+            if (views.keys[Key.W]) if (s5.physics?.isGrounded == true) s5.physics?.addForce(Vec2(0.0f, -400.0f))
+            if (views.keys[Key.A]) s5.physics?.addForce(Vec2(-10.0f, 0.0f))
+            if (views.keys[Key.D]) s5.physics?.addForce(Vec2(10.0f, 0.0f))
         }
     }
 }

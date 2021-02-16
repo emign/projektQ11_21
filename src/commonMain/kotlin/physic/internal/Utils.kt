@@ -42,6 +42,10 @@ fun Vec2.getTangent(): Vec2 {
     return Vec2(-this.y, this.x)
 }
 
+fun clamp(min: Number, max: Number, value: Number): Float {
+    return if (value.toFloat() < min.toFloat()) min.toFloat() else if (value.toFloat() > max.toFloat()) max.toFloat() else value.toFloat()
+}
+
 
 /**
  * Calculates the closest point on a [Rectangle]s bounds to a specific point
