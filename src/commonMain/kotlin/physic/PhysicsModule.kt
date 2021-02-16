@@ -5,6 +5,7 @@ import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.kds.setExtra
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.SolidRect
+import com.soywiz.korge.view.View
 import com.soywiz.korge.view.addUpdater
 import org.jbox2d.common.Vec2
 import physic.internal.Physics
@@ -33,7 +34,7 @@ fun Container.setupPhysicsSystem(gravity: Vec2 = Vec2(0f, 9.81f)) {
  * @param coefficient The coefficient for calculating the pixel distance from meters. The higher you set it, the faster the objects will move. By default 120.0
  * @param collisionCallback A custom callback which is executed when a collision with this [SolidRect] occurs. It takes another [Physics]-object as parameter for the collision partner
  */
-fun SolidRect.addPhysicsComponent(
+fun View.addPhysicsComponent(
     friction: Vec2 = Vec2(2.0f, 0.5f),
     isDynamic: Boolean = true,
     layer: Int,
@@ -76,7 +77,7 @@ fun addPhysicsComponentsTo(
 /**
  * Holds a [Physics]-object for each [SolidRect]. Returns null if this solidrect has no Physics-object. Create it with [Container.addPhysicsComponent]
  */
-val SolidRect.physics: Physics?
+val View.physics: Physics?
     get() {
         val p = getExtra("physic.getPhysics")
         return if (p is Physics) p as Physics

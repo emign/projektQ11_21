@@ -1,5 +1,6 @@
 package physic.internal
 
+import com.soywiz.korge.view.Circle
 import com.soywiz.korge.view.SolidRect
 import com.soywiz.korge.view.View
 import com.soywiz.korma.geom.Rectangle
@@ -31,8 +32,8 @@ class Physics(
 
     val x: Float get() = position.x
     val y: Float get() = position.y
-    val width = owner.width
-    val height = owner.height
+    val width = if (owner is SolidRect) owner.width else if (owner is Circle) owner.radius*2 else error("Circle or Solidrect")
+    val height = if (owner is SolidRect) owner.height else if (owner is Circle) owner.radius*2 else error("Circle or Solidrect")
 
     /**
      * Sum of all forces acting on this object at the moment. Is cleared and re-calculated every frame
