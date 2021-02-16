@@ -1,4 +1,4 @@
-package physic
+package physic.internal
 
 //Just a little bit math :)
 

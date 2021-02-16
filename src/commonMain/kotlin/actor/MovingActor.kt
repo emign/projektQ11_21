@@ -8,7 +8,7 @@ import fsm.StateUser
 import fsm.declareState
 import fsm.useStates
 import kotlinx.coroutines.CoroutineScope
-import physic.Physics
+import physic.internal.Physics
 
 /**
  * A MovingActor is an [Actor] which can move on screen and have states
@@ -43,9 +43,9 @@ abstract class MovingActor(parent: Container, val scope: CoroutineScope, val act
      */
     abstract fun initEvents()
 
-    /** Enables physics and apply gravity   */
+    /** Enables physic.getPhysics and apply gravity   */
     abstract fun enablePhysics()
-    /** Disable physics and disable gravity     */
+    /** Disable physic.getPhysics and disable gravity     */
     abstract fun disablePhysics()
 
     fun resetYPhysics() {

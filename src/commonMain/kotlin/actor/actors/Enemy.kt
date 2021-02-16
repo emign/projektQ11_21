@@ -13,8 +13,7 @@ import eventController.*
 import fsm.*
 import kotlinx.coroutines.CoroutineScope
 import org.jbox2d.dynamics.*
-import physic.Direction
-import physic.Physics
+import physic.internal.Physics
 
 
 /**
@@ -52,7 +51,7 @@ class Enemy(
         }
     }
 
-   // override val physics: Physics = Physics(this, Physics.PhysicsInfo(position.x, position.x + width, position.y, position.y + height, position, velocity, gravity))
+   // override val physic.getPhysics: Physics = Physics(this, Physics.PhysicsInfo(position.x, position.x + width, position.y, position.y + height, position, velocity, gravity))
 
 
     init {
@@ -71,7 +70,7 @@ class Enemy(
         //initialize states
         setStartState(idleState)
 
-        //register physics -> TODO
+        //register physic.getPhysics -> TODO
         initPhysics(true) {
             calculateCollisions(this, it)
         }
@@ -85,7 +84,7 @@ class Enemy(
     /** executed every frame        */
     override fun onExecute(dt: Double) {
         updateCurrentState(dt)
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         updateGraphics()
     }
 
@@ -136,12 +135,12 @@ class Enemy(
 
     //collision callbacks
     override fun onPlayerCollision(physicsOther: Physics) {
-        var hitType: Direction = Direction.NONE
+        /*var hitType: Direction = Direction.NONE
         val whatState = getCurrentState()
         if (whatState == dieState) {
             //do nothing
         } else {
-            //hitType = usedForDeterminingTypeOfPlayerCollision(physics, physicsOther)
+            //hitType = usedForDeterminingTypeOfPlayerCollision(physic.getPhysics, physicsOther)
         }
 
         when(hitType) {
@@ -160,7 +159,7 @@ class Enemy(
             else -> {
 
             }
-        }
+        }*/
 
     }
 
@@ -173,7 +172,7 @@ class Enemy(
     }
 
     override fun onPlatformCollision(platform: Physics) {
-        //val hitType: Direction = usedForDeterminingTypeOfPlayerCollision(physics, platform)
+        //val hitType: Direction = usedForDeterminingTypeOfPlayerCollision(physic.getPhysics, platform)
         /*if (hitType == Direction.UP) {
             onGroundCollision()
         }*/
@@ -213,7 +212,7 @@ class Enemy(
     override fun executeState_idle(dt: Double) {
         timer += 1
         //println("Ich bin dabei, nichts zu tun")
-       // physics.update(dt)
+       // physic.getPhysics.update(dt)
     }
 
     override fun endState_idle() { /* Nothing in here */
@@ -230,7 +229,7 @@ class Enemy(
     override fun executeState_walk(dt: Double) {
         //println("Ich bin dabei zu laufen")
         timer += 1
-        //physics.update(dt, maxSpeed, xSpeedStep, true)
+        //physic.getPhysics.update(dt, maxSpeed, xSpeedStep, true)
     }
 
     override fun endState_walk() {
@@ -245,7 +244,7 @@ class Enemy(
 
     override fun executeState_turn(dt: Double) {
         timer += 1
-       // physics.update(dt)
+       // physic.getPhysics.update(dt)
 
     }
 
@@ -265,7 +264,7 @@ class Enemy(
 
     override fun executeState_jump(dt: Double) {
         timer += 1
-        //physics.update(dt, maxSpeed * 0.8, xSpeedStep, false)
+        //physic.getPhysics.update(dt, maxSpeed * 0.8, xSpeedStep, false)
         if (model.animation.isCompleted) model.animation.play("steady") //TODO(Play idle based on direction)
     }
 
@@ -298,7 +297,7 @@ class Enemy(
     override fun executeState_normalAttack(dt: Double) {
         timer += 1
         //check if he collides with something -> this can take damage
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted) {
 
         }
@@ -316,7 +315,7 @@ class Enemy(
 
     override fun executeState_rangedAttack(dt: Double) {
         timer += 1
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted) {
 
         }
@@ -334,7 +333,7 @@ class Enemy(
 
     override fun executeState_specialAttack(dt: Double) {
         timer += 1
-        //no physics update for now
+        //no physic.getPhysics update for now
         if (model.animation.isCompleted) {
             doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
@@ -355,7 +354,7 @@ class Enemy(
     override fun executeState_getDamage(dt: Double) {
         //println("Ich bin dabei Schaden zu erhalten")
         timer += 1
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted) {
 
         }

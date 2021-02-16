@@ -13,7 +13,7 @@ import eventController.*
 import fsm.*
 import kotlinx.coroutines.CoroutineScope
 import org.jbox2d.dynamics.*
-import physic.Physics
+import physic.internal.Physics
 
 
 /**
@@ -51,7 +51,7 @@ class Player(
         }
     }
 
-    //override val physics: Physics = Physics(this, this.gravity)
+    //override val physic.getPhysics: Physics = Physics(this, this.gravity)
 
 
     init {
@@ -70,7 +70,7 @@ class Player(
         //initialize states
         setStartState(idleState)
 
-        //register physics -> TODO
+        //register physic.getPhysics -> TODO
         initPhysics(true) {
             calculateCollisions(this, it)
         }
@@ -84,7 +84,7 @@ class Player(
     /** executed every frame        */
     override fun onExecute(dt: Double) {
         updateCurrentState(dt)
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         updateGraphics()
     }
 
@@ -134,7 +134,7 @@ class Player(
 
     //collision callbacks
     override fun onPlayerCollision(physicsOther: Physics) {
-        //physics.calculate Collision and direction of collision
+        //physic.getPhysics.calculate Collision and direction of collision
         //maybe change state or something...
         println("Ich Player kollidiere mit einem Player")
     }
@@ -195,7 +195,7 @@ class Player(
         //println("Ich bin dabei zu laufen")
         timer += 1
         position.x += 5
-        //physics.update(dt, maxSpeed, xSpeedStep, true)
+        //physic.getPhysics.update(dt, maxSpeed, xSpeedStep, true)
     }
 
     override fun endState_walk() {
@@ -210,7 +210,7 @@ class Player(
 
     override fun executeState_turn(dt: Double) {
         timer += 1
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted){}
     }
 
@@ -230,7 +230,7 @@ class Player(
 
     override fun executeState_jump(dt: Double) {
         timer += 1
-        //physics.update(dt, maxSpeed * 0.8, xSpeedStep, false)
+        //physic.getPhysics.update(dt, maxSpeed * 0.8, xSpeedStep, false)
         if (model.animation.isCompleted) model.animation.play("steady") //TODO(Play idle based on direction)
     }
 
@@ -263,7 +263,7 @@ class Player(
     override fun executeState_normalAttack(dt: Double) {
         timer += 1
         //check if he collides with something -> this can take damage
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted) {
 
         }
@@ -281,7 +281,7 @@ class Player(
 
     override fun executeState_rangedAttack(dt: Double) {
         timer += 1
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted) {
 
         }
@@ -299,7 +299,7 @@ class Player(
 
     override fun executeState_specialAttack(dt: Double) {
         timer += 1
-        //no physics update for now
+        //no physic.getPhysics update for now
         if (model.animation.isCompleted) {
             doStateChange(manager.stateStack[manager.stateStack.size - 1])
         }
@@ -320,7 +320,7 @@ class Player(
     override fun executeState_getDamage(dt: Double) {
         //println("Ich bin dabei Schaden zu erhalten")
         timer += 1
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
         if (model.animation.isCompleted) {
 
         }

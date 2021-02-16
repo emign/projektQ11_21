@@ -1,10 +1,10 @@
-package physic
+package physic.internal
 
 import com.soywiz.kds.iterators.fastForEach
 import org.jbox2d.common.Vec2
-import physic.force.Damping
-import physic.force.ForceRegistry
-import physic.force.Gravity
+import physic.internal.forces.Damping
+import physic.internal.forces.ForceRegistry
+import physic.internal.forces.Gravity
 
 /**
  * This is the place, where all the magic happens. The Listener updates all [Physics]-objects and performs collision-detection
@@ -15,7 +15,7 @@ object PhysicsListener {
     private var gravityAcc: Vec2 = Vec2(0.0f, 9.81f)
 
     internal operator fun invoke(gravity: Vec2) {
-        this.gravityAcc = gravity
+        gravityAcc = gravity
     }
 
     private var forceRegistry = ForceRegistry()
@@ -56,7 +56,7 @@ object PhysicsListener {
     }
 
     /**
-     * Calculating velocities and positions for each physics-object added to the Listener. This also performs collision detection and resolution
+     * Calculating velocities and positions for each physic.getPhysics-object added to the Listener. This also performs collision detection and resolution
      * @param dt The time elapsed since the last frame
      */
     private fun applyPhysics(dt: Float) {
@@ -77,7 +77,7 @@ object PhysicsListener {
                 activePhysics.isGrounded = false
 
                 //collision detection and solving
-                activeObjects.filter { it != activePhysics }.fastForEach {
+                activeObjects.filter { it != activePhysics && it.layer != activePhysics.layer}.fastForEach {
                     solveCollision(activePhysics, it)
                 }
 

@@ -1,16 +1,14 @@
-package physic
+package physic.internal
 
 import com.soywiz.korge.view.SolidRect
 import com.soywiz.korge.view.View
 import com.soywiz.korma.geom.Rectangle
 import org.jbox2d.common.Vec2
-import physic.force.Damping
-import physic.force.ForceRegistry
 
 /**
  * Rigidbody-class. A [Physics]-object can be moved by the [Listener], can be updated with forces by the [ForceRegistry]
- * and reacts to collision with other physics-objects. Add this to a [Listener] with [Listener.addPhysics]
- * @property owner the owner of a physics Object. A physics object is invisible, but can be attached to a [SolidRect], so the owner takes its position from the physics object
+ * and reacts to collision with other physic.getPhysics-objects. Add this to a [Listener] with [Listener.addPhysics]
+ * @property owner the owner of a physic.getPhysics Object. A physic.getPhysics object is invisible, but can be attached to a [SolidRect], so the owner takes its position from the physic.getPhysics object
  * @property friction the coefficient of friction. This basically tells the [Damping]-force how to slow the object down. The higher the coefficient is, the faster it will be slowed down. Has a x- and y-Value
  * @property isDynamic just a boolean value for checking whether the object should move or not. This is like Box2D's static and dynamic
  * @property coefficient this is used internal for calculating pixels from meters. The higher this is, the faster the object will move, but collision detection becomes more inaccurate.
@@ -21,6 +19,7 @@ class Physics(
         val owner: View,
         var friction: Vec2,
         var isDynamic: Boolean,
+        val layer: Int,
         val coefficient: Vec2 = Vec2(120f, 120f),
         val callback: Physics.(Physics) -> Unit
 ) {
@@ -59,7 +58,7 @@ class Physics(
      * [Rectangle]. All those calculated points together combined creates a new [Rectangle]. If the original rectangles intersect, it means
      * that they have one or more points in common. But because of subtracting every point from every point, the overlapping points
      * cancel out to zero. So we just have to check if the origin (0, 0) is located inside of the resulting minkowski-rectangle, and we now
-     * that the two original physics objects are colliding. If this happens, we can just calculate the [closestPointOnBoundsToPoint]-method
+     * that the two original physic.getPhysics objects are colliding. If this happens, we can just calculate the [closestPointOnBoundsToPoint]-method
      * and take the minkowski-rectangle and the origin(0, 0) as paramter. This tells us from which direction the original [Physics]-objects
      * collided and is super useful for collision resolution
      * See [Listener.solveCollision] for the solving part
