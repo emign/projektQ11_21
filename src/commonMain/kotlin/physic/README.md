@@ -52,7 +52,7 @@ hinzugefügt.)
 
 ### Manuelles Hinzufügen von Kräften
 
-Um beiepielsweise eine Steuerung hinzuzufügen, müssen bei bestimmten Tasten Kräfte auf
+Um beispielsweise eine Steuerung hinzuzufügen, müssen bei bestimmten Tasten Kräfte auf
 den Körper ausgeübt werden, damit er sich bewegt (einzig die Gravitation wirkt immer automatisch).
 Dies geht per Zugriff auf die ```physics```-Variable:
 ````kotlin
