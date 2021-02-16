@@ -9,10 +9,10 @@ class MeinEvent(var meinWert : Any) : Event{
 ```
 Hierbei kann die Klasse nach Belieben gestaltet werden und Events können sogar vererbt werden.
 
-Dann können callbacks für dieses Event registriert werden. Dazu wird die Instanz des EventControllers 
+Dann können callbacks für dieses Event registriert werden. Dazu wird der EventController
 benötigt:
 ```kotlin
-eventController.register<MeinEvent>{ event ->
+EventController.register<MeinEvent>{ event ->
     //tue was sinnvolles
 }
 ```
@@ -22,9 +22,9 @@ Im callback können natürlich auch Funktionen aufgerufen werden.
 Der callback erwartet keine return Expression.
 
 ### 2. Triggern eines Events
-Um ein Event zu triggern wird wieder die Instanz des EventControllers und eine Instanz des verwendeten Events benötigt:
+Um ein Event zu triggern wird wieder der EventController und eine Instanz des verwendeten Events benötigt:
 ```kotlin
-eventController.send(MeinEvent("was auch immer"))
+EventController.send(MeinEvent("was auch immer"))
 ```
 Das Event, welches hier angegeben wird, bestimmt welche callbacks aufgerufen werden und werden den callbacks 
 auch als Parameter übergeben. Somit kann man auch Daten von dem Sender des Events zum Empfänger übertragen.
@@ -38,7 +38,7 @@ class MeineScene() : Scene(){
     var tmp = "a"
     
     override suspend fun Container.sceneInit() {
-        eventController.register<MeinEvent>{ event -> 
+        EventController.register<MeinEvent>{ event -> 
             tmp = event.string
         }
         
@@ -60,7 +60,7 @@ class MeinEvent(var string : String) : Event{
 class MeineKlasse(){
     
     init {
-        eventController.send(MeinEvent("b"))
+        EventController.send(MeinEvent("b"))
     }
     
 }
