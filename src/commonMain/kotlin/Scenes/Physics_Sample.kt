@@ -15,7 +15,7 @@ import physic.setupPhysicsSystem
 class Physics_Sample : Scene() {
     override suspend fun Container.sceneInit() {
 
-        /**
+        /*/**
          * Everything needed to work with physic.getPhysics-objects is contained in [PhysicsModule.kt].
          * All the other things are managed internal
          */
@@ -62,6 +62,41 @@ class Physics_Sample : Scene() {
             if (views.keys[Key.W]) if (s5.physics?.isGrounded == true) s5.physics?.addForce(Vec2(0.0f, -400.0f))
             if (views.keys[Key.A]) s5.physics?.addForce(Vec2(-10.0f, 0.0f))
             if (views.keys[Key.D]) s5.physics?.addForce(Vec2(10.0f, 0.0f))
+        }*/
+
+        val circleDynamic = Circle(radius = 100.0, Colors.RED).xy(50, 50)
+        val solidRectStatic = SolidRect(75, 120, Colors.YELLOW).xy(100, 500)
+
+        addChild(circleDynamic)
+        addChild(solidRectStatic)
+
+        setupPhysicsSystem()
+
+        circleDynamic.addPhysicsComponent(
+            friction = Vec2(2.0f, 0.5f),
+            isDynamic = true,
+            layer = 1,
+            coefficient = Vec2(120.0f, 120.0f))
+        { other ->
+            //das hier ist der Callback, der bei Kollision ausgeführt werden soll.
+            //Das andere Element(other) ist das jeweilige Objekt, mit dem die Kollision stattfindet
+            println("Hey, ich kollidiere gerade mit $other")
+        }
+
+        solidRectStatic.addPhysicsComponent(isDynamic = false, layer = 2, collisionCallback = {/* Nothing */})
+
+        addUpdater {
+            if (views.keys[Key.UP]) {
+                if (circleDynamic.physics?.isGrounded == true) {
+                    circleDynamic.physics?.addForce(Vec2(0.0f, -400.0f))
+                }
+            }
+            if (views.keys[Key.LEFT]) {
+                circleDynamic.physics?.addForce(Vec2(-10.0f, 0.0f))
+            }
+            if (views.keys[Key.RIGHT]) {
+                circleDynamic.physics?.addForce(Vec2(10.0f, 0.0f))
+            }
         }
     }
 }

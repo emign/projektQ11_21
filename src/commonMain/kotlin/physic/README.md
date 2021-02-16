@@ -12,7 +12,7 @@ Die Setup-Funktion erhält als Parameter die Gravitation(wird kein spezieller We
 
 ### Hinzufügen einer Physik-Komponente
 
-Zu bestehenden SolidRect-Objekten kann im Anschluss an die Registrierung des Listeners ein
+Zu bestehenden SolidRect- bzw. Circle-Objekten kann im Anschluss an die Registrierung des Listeners ein
 Physikobjekt hinzugefügt werden:
 ```kotlin
 val solidrect = SolidRect(width = 100, height = 100, color = Colors.RED).xy(50, 50)
@@ -39,14 +39,14 @@ Bei der Registrierung einer Physik-Komponente können folgende Parameter festgel
   
 ### Zugriff auf bestehende Physik-Komponenten
 
-Ist mit obigem Befehl eine Physikkomponente zu einem SolidRect hinzugefügt worden, kann auf
+Ist mit obigem Befehl eine Physikkomponente zu einem SolidRect/Circle hinzugefügt worden, kann auf
 diese direkt mit der Variable ```physics``` zugegriffen werden. So kann man z.B. feststellen,
 ob das Physikobjekt gerade am Boden ist:
 ````kotlin
 solidrect.physics?.isGrounded
 ````
 Wichtig zu beachten ist, dass ```physics``` ein nullable-type ist, d.h. immer mit einem
-null-check geprüft werden muss. Dies liegt daran, dass das SolidRect zu diesem Zeitpunkt
+null-check geprüft werden muss. Dies liegt daran, dass das SolidRect/der Circle zu diesem Zeitpunkt
 möglicherweise gar kein Physik-Objekt hat(z.B. wurde noch keins mit ```addPhysicsComponent```
 hinzugefügt.)
 
@@ -65,17 +65,17 @@ Kräfte müssen immer als ```Vec2``` angeben werden (Mathematischer Vektor)
 
 Im folgenden Beispiel werden 2 PhysikObjekte erzeugt, wobei diese in Korge untereinander positioniert
 werden. Das untere wird als fester Boden gesetzt ```(dynamic = false)```, das obere soll auf Gravitation etc.
-reagieren:
+reagieren und ein Kreis sein
 ````kotlin
-val solidRectDynamic = SolidRect(width = 100, height = 100, color = Colors.RED).xy(50, 50)
+val circleDynamic = Circle(radius = 100, Colors.RED).xy(50, 50)
 val solidRectStatic = SolidRect(75, 120, Colors.YELLOW).xy(100, 500)
 
-addChild(solidRectDynamic)
+addChild(circleDynamic)
 addChild(solidRectStatic)
 
 setupPhysicsSystem()
 
-solidRectDynamic.addPhysicsComponent(
+circleDynamic.addPhysicsComponent(
   friction = Vec2(2.0f, 0.5f), 
   isDynamic = true, 
   layer = 1, 
@@ -90,15 +90,15 @@ solidRectStatic.addPhysicsComponent(isDynamic = false, layer = 2, collisionCallb
 
 addUpdater {
   if (views.keys[Key.UP]) {
-      if (solidRectDynamic.physics?.isGrounded == true) {
-          solidRectDynamic.physics?.addForce(Vec2(0.0f, -400.0f))
+      if (circleDynamic.physics?.isGrounded == true) { 
+          circleDynamic.physics?.addForce(Vec2(0.0f, -400.0f))
       }
   }
-  if (views.keys[Key.LEFT]) {
-      solidRectDynamic.physics?.addForce(Vec2(-10.0f, 0.0f))
+  if (views.keys[Key.LEFT]) { 
+      circleDynamic.physics?.addForce(Vec2(-10.0f, 0.0f))
   }
-  if (views.keys[Key.RIGHT]) {
-      solidRectDynamic.physics?.addForce(Vec2(10.0f, 0.0f))
+  if (views.keys[Key.RIGHT]) { 
+      circleDynamic.physics?.addForce(Vec2(10.0f, 0.0f))
   }
 }
 ````
