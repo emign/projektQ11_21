@@ -8,7 +8,7 @@ import kotlin.reflect.*
 /**
  * the Object EventController handles Events globally
  */
-object EventController {
+object eventController {
 
     private val bus = GlobalBus()
 

@@ -3,7 +3,7 @@ package physic.internal
 import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.korge.view.Circle
 import com.soywiz.korge.view.SolidRect
-import eventController.EventController
+import eventController.eventController
 import org.jbox2d.common.Vec2
 import physic.ForceEvent
 import physic.internal.forces.Damping
@@ -21,7 +21,7 @@ object PhysicsListener {
 
     internal operator fun invoke(gravity: Vec2) {
         gravityAcc = gravity
-        EventController.register<ForceEvent> { event ->
+        eventController.register<ForceEvent> { event ->
             event.receiver?.addForce(event.force)
         }
     }
@@ -168,7 +168,7 @@ object PhysicsListener {
             if (distSqrd < r2.owner.radius * r2.owner.radius) {
                 val dist = sqrt(distSqrd)
                 normal *= (1.0f/dist)
-                if (normal.y > 1.41/2.0f) r2.isGrounded = true
+                if (normal.y > 1.41/2.0f) r1.isGrounded = true
                 val penetration = r2.owner.radius - dist
                 r1.position += normal * penetration * -1.0f
                 r1.velocity += normal * penetration * -1.0f * 0.3

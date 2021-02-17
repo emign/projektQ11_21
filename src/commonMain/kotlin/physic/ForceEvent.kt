@@ -1,10 +1,8 @@
 package physic
 
-import com.soywiz.korge.input.Gestures
-import com.soywiz.korge.view.SolidRect
 import com.soywiz.korge.view.View
 import eventController.Event
-import eventController.EventController
+import eventController.eventController
 import org.jbox2d.common.Vec2
 import physic.internal.Physics
 import physic.internal.PhysicsDirection
@@ -39,12 +37,12 @@ class ForceEvent(val force: Vec2, val receiver: Physics?) : Event {
 
 fun sendPhysicsEvent(force: Vec2, receiver: View) {
     if (receiver.physics != null) {
-        EventController.send(ForceEvent(force, receiver.physics))
+        eventController.send(ForceEvent(force, receiver.physics))
     }
 }
 
 fun sendPhysicsEvent(direction: PhysicsDirection, magnitude: Float, receiver: View) {
     if (receiver.physics != null) {
-        EventController.send(ForceEvent(direction, magnitude, receiver.physics))
+        eventController.send(ForceEvent(direction, magnitude, receiver.physics))
     }
 }
