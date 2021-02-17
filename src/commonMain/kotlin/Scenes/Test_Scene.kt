@@ -1,14 +1,22 @@
 package Scenes
 
 //import fsm.Entity
-import Steuerung.Keyboard.KeyboardInputController
-import Steuerung.Mouse.MouseEvent
-import Steuerung.Mouse.MouseInputController
+import com.soywiz.korev.*
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
+import eventController.*
+import steuerung.*
+import steuerung.InputController.initGamepadController
+import steuerung.gamepad.*
 
 class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
+
+        initGamepadController(null,null,null)
+
+        eventController.register<GamepadConnectEvent> {
+            println(it.gamePad)
+        }
 
         /*val testPlayer = Player.build("Characters/Test.xml", this@TestScene).apply { xy(100, 100); scale = 0.1 }
         val testEnemy = Enemy.build("Characters/Test.xml", this@TestScene).apply { xy(300, 300); scale = 0.1 }

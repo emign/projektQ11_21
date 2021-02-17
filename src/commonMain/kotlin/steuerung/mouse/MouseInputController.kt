@@ -1,5 +1,5 @@
-package Steuerung.Mouse
-import Steuerung.Mouse.MouseEvent as SteuerungMouseEvent
+package steuerung.mouse
+import steuerung.mouse.MouseEvent as SteuerungMouseEvent
 import com.soywiz.korev.MouseButton
 import com.soywiz.korev.MouseEvent
 import com.soywiz.korge.baseview.BaseView

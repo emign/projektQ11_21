@@ -1,4 +1,4 @@
-package Steuerung.Mouse
+package steuerung.mouse
 
 class MouseData(
     val mouseX: Int,

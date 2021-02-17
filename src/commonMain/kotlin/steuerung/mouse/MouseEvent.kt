@@ -1,4 +1,4 @@
-package Steuerung.Mouse
+package steuerung.mouse
 
 import eventController.Event
 

@@ -1,5 +1,0 @@
-package Steuerung
-
-class InputController {
-
-}
