@@ -1,4 +1,4 @@
-package Steuerung
+package Steuerung.Keyboard
 
 import eventController.Event
 

@@ -1,6 +1,9 @@
 package Scenes
 
 //import fsm.Entity
+import Steuerung.Keyboard.KeyboardInputController
+import Steuerung.Mouse.MouseEvent
+import Steuerung.Mouse.MouseInputController
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 

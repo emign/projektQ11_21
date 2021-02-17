@@ -1,4 +1,4 @@
-package Steuerung
+package Steuerung.Keyboard
 
 class KeyData(val jump:Boolean,
               val left: Boolean,
