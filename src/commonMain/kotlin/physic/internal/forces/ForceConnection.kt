@@ -1,6 +1,6 @@
-package physic.force
+package physic.internal.forces
 
-import physic.Physics
+import physic.internal.Physics
 
 /**
  * Acts as a wrapper for combinig a [Force] and a [Physics]-object on which the force will be applied

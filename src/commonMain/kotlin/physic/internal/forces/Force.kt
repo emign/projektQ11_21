@@ -1,6 +1,6 @@
-package physic.force
+package physic.internal.forces
 
-import physic.Physics
+import physic.internal.Physics
 
 /**
  * Basic interface for all different forces. They are all stored in [Forces.kt]. The two most important ones are

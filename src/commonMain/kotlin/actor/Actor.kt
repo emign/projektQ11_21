@@ -3,7 +3,7 @@ package actor
 import com.soywiz.korge.view.Container
 import com.soywiz.korma.geom.Point
 import org.jbox2d.common.Vec2
-import physic.Physics
+import physic.internal.Physics
 
 /**
  * An actor is basically an object which you can see on screen (Player, Enemy, Ground, ...)
@@ -32,7 +32,7 @@ abstract class Actor(val par: Container) : Container() {
         coefficient: Vec2 = Vec2(120.0f, 120.0f),
         collisionCallback: Physics.(Physics) -> Unit = {}
     ) {
-        //par.addPhysicsComponent(this, friction, isDynamic, coefficient, collisionCallback)
+        //par.physic.addPhysicsComponent(this, friction, isDynamic, coefficient, collisionCallback)
     }
 
     abstract fun kill()

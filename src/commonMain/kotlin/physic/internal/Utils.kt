@@ -1,4 +1,4 @@
-package physic
+package physic.internal
 
 //Just a little bit math :)
 
@@ -40,6 +40,10 @@ operator fun Vec2.minus(new: Vec2): Vec2 {
  */
 fun Vec2.getTangent(): Vec2 {
     return Vec2(-this.y, this.x)
+}
+
+fun clamp(min: Number, max: Number, value: Number): Float {
+    return if (value.toFloat() < min.toFloat()) min.toFloat() else if (value.toFloat() > max.toFloat()) max.toFloat() else value.toFloat()
 }
 
 
