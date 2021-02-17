@@ -61,6 +61,31 @@ Dies geht per Zugriff auf die ```physics```-Variable:
 ````
 Kräfte müssen immer als ```Vec2``` angeben werden (Mathematischer Vektor)
 
+### Triggern von Events
+
+Anstatt Kräfte direkt zu einer Physik-Komponente hinzuzufügen, kann dies auch über den ```EventController```
+ausgeführt werden. Dafür stehen zwei Möglichkeiten zur Verfügung:
+````kotlin
+val solidrect = SolidRect(55.0, 100.0, Colors.PURPLE).xy(100, 300)
+//add Physics component here 
+//...
+sendPhysicsEvent(PhysicsDirection.LEFT, 20.0f, solidrect)
+
+//oder
+
+sendPhysicsEvent(Vec2(20.0f, 0.0f), solidrect)
+````
+
+Diese beiden Funktionen triggern intern im ```EventController``` dasselbe Event, sie unterscheiden sich nur in ihren Parametern:
+
+- ```fun sendPhysicsEvent(force: Vec2, receiver: View)``` lässt eine festgelegte Kraft(Vektor) auf das
+Physikobjekt(receiver) wirken: Momentan werden als ```receiver``` nur SolidRect und Circle unterstützt
+  
+- ```fun sendPhysicsEvent(direction: PhysicsDirection, magnitude: Float, receiver: View)``` wendet eine Kraft
+auf ein Physikobjekt an, wobei die Kraft hier als ```PhysicsDirection``` angegeben wird. Als Optionen stehen
+  ```UP```, ```DOWN```, ```LEFT``` und ```RIGHT``` zur Verfügung. Hierbei wird durch ```magnitude``` die Stärke
+  der Kraft in die jeweilige Richtung angegeben. ```receiver``` ist auch hier das Objekt, auf das die Kraft wirken soll.
+
 ### Beipielcode
 
 Im folgenden Beispiel werden 2 PhysikObjekte erzeugt, wobei diese in Korge untereinander positioniert
@@ -90,15 +115,15 @@ solidRectStatic.addPhysicsComponent(isDynamic = false, layer = 2, collisionCallb
 
 addUpdater {
   if (views.keys[Key.UP]) {
-      if (circleDynamic.physics?.isGrounded == true) { 
-          circleDynamic.physics?.addForce(Vec2(0.0f, -400.0f))
+      if (circleDynamic.physics?.isGrounded == true) {
+          sendPhysicsEvent(PhysicsDirection.UP, 400.0f, circleDynamic)
       }
   }
-  if (views.keys[Key.LEFT]) { 
-      circleDynamic.physics?.addForce(Vec2(-10.0f, 0.0f))
+  if (views.keys[Key.LEFT]) {
+      sendPhysicsEvent(PhysicsDirection.LEFT, 20.0f, circleDynamic)
   }
-  if (views.keys[Key.RIGHT]) { 
-      circleDynamic.physics?.addForce(Vec2(10.0f, 0.0f))
+  if (views.keys[Key.RIGHT]) {
+      sendPhysicsEvent(PhysicsDirection.RIGHT, 20.0f, circleDynamic)
   }
 }
 ````
