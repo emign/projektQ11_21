@@ -18,15 +18,12 @@ import physic.internal.PhysicsListener
  * @param gravity The gravity for the whole physic.getPhysics system as [Vec2]. By default it is Vec2(0f, 9.81f)
  */
 fun Container.setupPhysicsSystem(gravity: Vec2 = Vec2(0f, 9.81f)) {
-    PhysicsListener(gravity)
-    var accumulator = 0.0
-    this.addUpdater {
-        //accumulator += it.milliseconds
-        //if (accumulator > 0.15) accumulator = 0.15
-        //while (accumulator > 1.0f/60.0f) {
+    if (!PhysicsListener.running) {
+        PhysicsListener(gravity)
+        PhysicsListener.running = true
+        this.addUpdater {
             PhysicsListener.update(it.milliseconds.toFloat())
-          //  accumulator -= 1.0f/60.0f
-        //}
+        }
     }
 }
 
@@ -48,10 +45,9 @@ fun View.addPhysicsComponent(
     collisionCallback: Physics.(Physics) -> Unit = {}
 ) {
     val physics = Physics(this, friction, isDynamic, layer, coefficient, collisionCallback)
-    this.setExtra("physic.getPhysics", physics)
+    this.setExtra("physicComponent", physics)
     PhysicsListener.addPhysics(physics)
 }
-
 
 
 /**
@@ -79,13 +75,12 @@ fun addPhysicsComponentsTo(
 }
 
 
-
 /**
  * Holds a [Physics]-object for each [View]. Returns null if this solidrect has no Physics-object. Create it with [View.addPhysicsComponent]
  */
 val View.physics: Physics?
     get() {
-        val p = getExtra("physic.getPhysics")
+        val p = getExtra("physicComponent")
         return if (p is Physics) p as Physics
         else null
     }

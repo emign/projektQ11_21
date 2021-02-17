@@ -3,7 +3,9 @@ package physic.internal
 import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.korge.view.Circle
 import com.soywiz.korge.view.SolidRect
+import eventController.EventController
 import org.jbox2d.common.Vec2
+import physic.ForceEvent
 import physic.internal.forces.Damping
 import physic.internal.forces.ForceRegistry
 import physic.internal.forces.Gravity
@@ -19,11 +21,15 @@ object PhysicsListener {
 
     internal operator fun invoke(gravity: Vec2) {
         gravityAcc = gravity
+        EventController.register<ForceEvent> { event ->
+            event.receiver?.addForce(event.force)
+        }
     }
 
     private var forceRegistry = ForceRegistry()
     private var gravity = Gravity(Vec2(gravityAcc))
     private var damping = Damping()
+    var running: Boolean = false
 
     /**
      * This list contains all [Physics]-objects that will be updated by the [Listener]
@@ -80,7 +86,7 @@ object PhysicsListener {
                 activePhysics.isGrounded = false
 
                 //collision detection and solving
-                activeObjects.filter { it != activePhysics && it.layer != activePhysics.layer }.fastForEach {
+                activeObjects.filter { it != activePhysics && activePhysics.layer != it.layer }.fastForEach {
                     solveCollision(activePhysics, it)
                 }
 
@@ -94,8 +100,6 @@ object PhysicsListener {
                 activePhysics.force = Vec2(0.0f, 0.0f)
             }
         }
-        //zero all forces, they have to be re-calculated every frame to have a correct simulation
-        forceRegistry.zeroForces()
     }
 
     /**
