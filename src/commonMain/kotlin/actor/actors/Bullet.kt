@@ -10,8 +10,7 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import kotlinx.coroutines.CoroutineScope
-import org.jbox2d.common.Vec2
-import physic.Physics
+import physic.internal.Physics
 
 class Bullet(parent: Container, override val model: KorgeDbArmatureDisplay, scope: CoroutineScope, actorXmlData: ActorXmlData): MovingActor(parent, scope, actorXmlData) {
 
@@ -191,7 +190,7 @@ class Bullet(parent: Container, override val model: KorgeDbArmatureDisplay, scop
     }
 
     override fun onExecute(dt: Double) {
-        //physics.update(dt)
+        //physic.getPhysics.update(dt)
     }
 
     override fun onDelete() {

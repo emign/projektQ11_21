@@ -1,8 +1,8 @@
-package physic.force
+package physic.internal.forces
 
 import com.soywiz.kds.iterators.fastForEach
 import org.jbox2d.common.Vec2
-import physic.Physics
+import physic.internal.Physics
 
 /**
  * This class manages all [Physics]-objects and is responsible for applying the forces to them. Each [Listener]
@@ -16,7 +16,7 @@ class ForceRegistry {
     /**
      * Adds a [Physics] object to the list and add a [Force] to it so that the [ForceRegistry] updates this object with the specified force
      * If you want to have multiple forces acting on a [Physics]-object, you have to call this method for each force.
-     * @param activePhysics The physics-object which will be added to the list and updated every frame
+     * @param activePhysics The physic.getPhysics-object which will be added to the list and updated every frame
      * @param force The [Force] which will be applied on the object every frame
      */
     fun add(activePhysics: Physics, force: Force) {
@@ -35,7 +35,7 @@ class ForceRegistry {
     }
 
     /**
-     * Clears all forces in this [ForceRegistry]. The registry stops updating and no force is applied on any physics object,
+     * Clears all forces in this [ForceRegistry]. The registry stops updating and no force is applied on any physic.getPhysics object,
      * which was added to this registry. All [Force]s and [Physics]-objects will be removed from the list
      */
     fun clear() {

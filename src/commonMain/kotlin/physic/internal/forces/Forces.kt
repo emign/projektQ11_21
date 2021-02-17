@@ -1,8 +1,7 @@
-package physic.force
+package physic.internal.forces
 
-import com.soywiz.korma.geom.Point
 import org.jbox2d.common.Vec2
-import physic.Physics
+import physic.internal.Physics
 
 /**
  * Gravity force. Implements [Force] and overrides the [Force.updateForce] method
