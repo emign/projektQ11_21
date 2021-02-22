@@ -1,6 +1,6 @@
-#API XML Read-Write Documentation
+# API XML Read-Write Documentation
 ___
-##Read
+## Read
 Um eine XML-Datei auszulesen, muss zuerst die
 ```XmlReadWrite.read()```
 Funktion aufgerufen werden:
@@ -14,7 +14,7 @@ Beim Aufrufen müssen folgende Parameter angegeben werden:
 
 Als Output erhält man ein Objekt der Klasse ```XmlData```.
 
-##Write
+## Write
 
 Um eine XML-Datei zu schreiben, muss die ```XmlReadWrite.write()``` Funktion aufgerufen werden:
 ```kotlin
