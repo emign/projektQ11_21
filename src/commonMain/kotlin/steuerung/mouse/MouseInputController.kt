@@ -27,6 +27,9 @@ class MouseInputController(override val view: View) : MouseComponent {
                     if (event.button== MouseButton.RIGHT) mouseRightState=false
                     if ( event.button==MouseButton.LEFT) mouseLeftState=false
                 }
+                else -> {
+
+                }
             }
         val act = MouseData(mouseX, mouseY, mouseLeftState, mouseRightState)
         if (!act.equalsData(prev)) eventController.send(SteuerungMouseEvent(act))
