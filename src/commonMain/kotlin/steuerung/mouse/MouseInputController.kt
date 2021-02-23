@@ -1,13 +1,12 @@
 package steuerung.mouse
-import steuerung.mouse.MouseEvent as SteuerungMouseEvent
-import com.soywiz.korev.MouseButton
+import com.soywiz.korev.*
 import com.soywiz.korev.MouseEvent
-import com.soywiz.korge.baseview.BaseView
-import com.soywiz.korge.component.MouseComponent
-import com.soywiz.korge.view.Views
-import eventController.eventController
+import com.soywiz.korge.component.*
+import com.soywiz.korge.view.*
+import eventController.*
+import steuerung.mouse.MouseEvent as SteuerungMouseEvent
 
-class MouseInputController(override val view: BaseView) : MouseComponent {
+class MouseInputController(override val view: View) : MouseComponent {
    var mouseLeftState: Boolean=false
    var mouseRightState: Boolean=false
     var mouseX: Int =0
@@ -17,8 +16,8 @@ class MouseInputController(override val view: BaseView) : MouseComponent {
 
             when (event.type) {
                 MouseEvent.Type.MOVE -> {
-                    mouseX= event.x
-                    mouseY= event.y
+                    mouseX= view.globalToLocalXY(event.x.toDouble(), event.y.toDouble()).x.toInt()
+                    mouseY= view.globalToLocalXY(event.x.toDouble(), event.y.toDouble()).y.toInt()
                 }
                 MouseEvent.Type.DOWN -> {
                     if (event.button== MouseButton.RIGHT) mouseRightState=true

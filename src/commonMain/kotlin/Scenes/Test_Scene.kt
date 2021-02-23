@@ -2,20 +2,23 @@ package Scenes
 
 //import fsm.Entity
 import com.soywiz.korev.*
+import com.soywiz.korge.input.*
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 import eventController.*
 import steuerung.*
 import steuerung.InputController.initGamepadController
+import steuerung.InputController.initMouseController
 import steuerung.gamepad.*
+import steuerung.mouse.MouseEvent
 
 class TestScene : Scene() {
     override suspend fun Container.sceneInit() {
 
-        initGamepadController(null,null,null)
+        initMouseController()
 
-        eventController.register<GamepadConnectEvent> {
-            println(it.gamePad)
+        eventController.register<MouseEvent> {
+            println (it.data.mouseX.toString()+","+it.data.mouseY)
         }
 
         /*val testPlayer = Player.build("Characters/Test.xml", this@TestScene).apply { xy(100, 100); scale = 0.1 }
