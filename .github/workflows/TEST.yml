@@ -15,17 +15,17 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2.1.0
-      - run: CALL gradlew.bat --no-daemon jvmTest
+      - run: CALL gradlew.bat --stacktrace --no-daemon jvmTest
         shell: cmd
 
   test-mac:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2.1.0
-      - run: ./gradlew --no-daemon jvmTest
+      - run: ./gradlew --stacktrace --no-daemon jvmTest
 
   test-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.1.0
-      - run: ./gradlew --no-daemon jvmTest
+      - run: ./gradlew --stacktrace --no-daemon jvmTest

@@ -15,10 +15,10 @@ class GamepadInputController(override val view: View):GamepadComponent {
         event.gamepads.forEachIndexed { index, gamepadInfo ->
             if (InputController.trackedGamePads.contains(index)){
                 InputController.trackedButtons.forEach { gameButton ->
-                    eventController.send(GamepadButtonEvent(gameButton,gamepadInfo[gameButton]>0.0))
+                    eventController.send(GamepadButtonEvent(gameButton,gamepadInfo[gameButton]>0.0,gamepadInfo.index))
                 }
                 InputController.trackedSticks.forEach { gameStick ->
-                    eventController.send(GamepadStickEvent(gamepadInfo[gameStick].normalized))
+                    eventController.send(GamepadStickEvent(gamepadInfo[gameStick].normalized,gameStick,gamepadInfo.index))
                 }
             }
         }
