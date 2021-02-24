@@ -19,7 +19,7 @@ Um somit allgemeine Koordinaten zu bekommen, sollte das verwendete view so groß
 ### Empfangen der Events
 Um ein Tastatur-Event zu empfangen, muss ein KeyEvent beim EventController registriert werden:
 ```kotlin
-eventContloller.register<KeyEvent>{ event ->
+eventController.register<KeyEvent>{ event ->
     event.key//geänderte Taste
     event.down//true wenn die Taste gedrückt wird, false wenn die Taste losgelassen wird
 }
@@ -28,7 +28,7 @@ Das KeyEvent gibt dan die Taste und einen Boolean, ob die Taste gedrückt oder l
 
 Für die Maus muss ein MouseEvent beim EventController registriert werden:
 ```kotlin
-eventContloller.register<MouseEvent> { event ->
+eventController.register<MouseEvent> { event ->
     event.data//Ein MouseData Objekt
 }
 ```
